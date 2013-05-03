@@ -1,0 +1,93 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+facility "kern";
+
+event_type "PCI: No IRQ known for interrupt pin %c of device %s.%s\n";
+eventName = "unknownIrq";
+reportType = "MENU";
+File = "arch/i386/pci/irq.c";
+Class = SOFTWARE;
+Type = 	CONFIG;
+ProbableCauses = {
+	"software logic error"
+};
+Actions = {
+	"Check s/w levels for PCI s/w. Suggested command for locating s/w level"
+		" is \"rpm -qf /usr/lib/libpci.a\"",
+	"Try using the driver parameter pci=biosirq."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	char pin "%c";
+	string slot;
+	string advice;
+}
+
+event_type "PCI: Device %s not available because of resource collisions\n";
+eventName = "pciResources";
+reportType = "MENU";
+File = "arch/i386/pci/i386.c";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The BIOS has assigned conflicting address spaces to different devices."
+};
+Actions = {
+	"Execute diagnostics.",
+	"Upgrade your BIOS.",
+	"Replace the adapter."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string slot;
+}
+
+/* This one is no longer PCI-specific, but it doesn't hurt to have it here. */
+event_type "%s: probe of %s failed with error %d\n";
+eventName = "probeFailed";
+reportType = "MENU";
+File = "drivers/base/bus.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	 "adapter h/w failure",
+	 "out of memory (if error = -12)"
+};
+Actions = {
+	"If out of memory, increase system memory, and/or retry the command"
+		" with 'ifconfig devName up'",
+	"Verify Driver Software Level",
+	"Execute diagnostics",
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string driver;	/*PRINTK_ONLY*/
+	string bus_id;	/*PRINTK_ONLY*/
+	int errno;
+}

@@ -1,0 +1,50 @@
+# Facility registry: Numeric codes and names for event-logging facilities.
+#
+# Field 1 is the decimal, hex, or octal facility code.
+#
+# Field 2 is the facility's name.  Its length must not exceed 127
+# (POSIX_LOG_MEMSTR_MAXLEN-1) characters.  The name must not contain any
+# double quotes (").  If the name contains any tabs or spaces, the entire
+# name must be enclosed in double quotes.
+#
+# The remaining fields are optional.  If included, they must appear in the
+# following order:
+# - The word "private", which specifies that events logged by that facility
+# will be logged to the read-protected log /var/evlog/privatelog.
+# - The word "kernel", which specifies that only the kernel is permitted
+# to log events with that facility code.
+# - A filter string, which must be a valid POSIX query expression.  For that
+# facility, only events that match that filter will be logged.
+#
+# For example:
+#	0x6871010d "Bob's FS" kernel 'severity > info'
+# specifies that the facility whose name is "Bob's FS" has a facility code
+# of 0x6871010d.  Any event logged by this facility that doesn't come from
+# the kernel, or has a severity of INFO or less, will be discarded.
+#
+# Before removing or renaming any entries, consult POSIX 1003.25 for a list
+# of standard facilities.
+#
+# It is best to use the evlfacility command to add, modify, or remove entries
+# in this registry.
+0 KERN
+8 USER
+16 MAIL
+24 DAEMON
+32 AUTH
+40 SYSLOG
+48 LPR
+56 NEWS
+64 UUCP
+72 CRON
+80 AUTHPRIV	private
+88 FTP
+96 LOGMGMT
+128 LOCAL0
+136 LOCAL1
+144 LOCAL2
+152 LOCAL3
+160 LOCAL4
+168 LOCAL5
+176 LOCAL6
+184 LOCAL7

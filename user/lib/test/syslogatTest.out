@@ -1,0 +1,37 @@
+syslogatTest.c:game:x
+OSU beat Eastern Kentucky in Corvallis, 49-10
+syslogatTest.c:game:x
+OSU beat Temple in Philadelphia, 35-3
+syslogatTest.c:game:x
+OSU beat UNLV in Corvallis, 47-17
+syslogatTest.c:game:x
+OSU beat Fresno St in Corvallis, 59-19
+syslogatTest.c:game:x
+USC beat OSU in LA, 22-0
+syslogatTest.c:game:x
+UCLA beat OSU in Corvallis, 43-35
+syslogatTest.c:game:x
+Arizona St beat OSU in Tempe, 13-9
+syslogatTest.c:game:x
+OSU beat California in Corvallis, 24-13
+syslogatTest.c:game:x
+OSU beat Arizona in Corvallis, 38-3
+syslogatTest.c:game:x
+Washington beat OSU in Seattle, 41-29
+syslogatTest.c:game:x
+OSU beat Stanford in Palo Alto, 31-21
+syslogatTest.c:game:x
+OSU beat Oregon in Corvallis, 45-24
+-----
+syslogatTest.c:Eastern Kentucky:Corvallis:49:10:
+syslogatTest.c:Temple:Philadelphia:35:3:
+syslogatTest.c:UNLV:Corvallis:47:17:
+syslogatTest.c:Fresno St:Corvallis:59:19:Wow!  How good is this team?
+syslogatTest.c:USC:LA:0:22:Not great, apparently.
+syslogatTest.c:UCLA:Corvallis:35:43:
+syslogatTest.c:Arizona St:Tempe:9:13:PAC-10 looking good this year
+syslogatTest.c:California:Corvallis:24:13:
+syslogatTest.c:Arizona:Corvallis:38:3:
+syslogatTest.c:Washington:Seattle:29:41:No mud in Husky Stadium
+syslogatTest.c:Stanford:Palo Alto:31:21:Looked grim at halftime
+syslogatTest.c:Oregon:Corvallis:45:24:Ducks' nightmare continues

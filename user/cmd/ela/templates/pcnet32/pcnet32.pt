@@ -1,0 +1,291 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+/* facility "pcnet32"; */
+/* printk -> kern */
+facility "kern";
+defaultFile = "drivers/net/pcnet32.c";
+
+event_type "pcnet32: failed to enable device -- err=%d\n";
+eventName = "enableDev";
+reportType = "SRC";
+servCode = "BF775F00";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver was unable to enable the PCI device"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+    int err;
+}
+
+event_type "pcnet32: card has no PCI IO resources, aborting\n";
+eventName = "noPciResources";
+reportType = "SRC";
+servCode = "BF775F01";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The hardware did not request any IO resources"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "pcnet32: architecture does not support 32bit PCI busmaster DMA\n";
+eventName = "dma32";
+reportType = "SRC";
+servCode = "BF775800";
+FRU_SRC_Priority = "M";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver was unable to use 32-bit DMA"
+};
+Actions = {
+	"Verify driver software level"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "pcnet32: io address range already allocated\n";
+eventName = "addrsAlreadyAlloc";
+reportType = "SRC";
+servCode = "BF775F02";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The IO addresses for the card are already allocated."
+};
+Actions = {
+	"Verify driver software level",
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "pcnet32: Memory allocation failed.\n";
+eventName = "noMem";
+reportType = "SRC";
+servCode = "BF775801";
+FRU_SRC_Priority = "H";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Insufficient kernel memory."
+};
+Actions = {
+	"Verify driver software level.",
+	"Increase the memory on the system."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "pcnet32: Consistent memory allocation failed.\n";
+eventName = "noConsistentMem";
+reportType = "SRC";
+servCode = "BF775801";
+FRU_SRC_Priority = "H";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Insufficient DMA accessible kernel memory."
+};
+Actions = {
+	"Verify driver software level.",
+	"Increase the memory on the system."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "pcnet32: No access methods\n";
+eventName = "noAccessMethods";
+reportType = "SRC";
+servCode = "BF775F03";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The chip can not be accessed in 32 or 16 bit mode"
+};
+Actions = {
+	"Verify driver software level",
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "%s: pcnet32_init_ring dev_alloc_skb failed.\n";
+eventName = "dev_alloc_skb";
+reportType = "SRC";
+servCode = "BF775801";
+FRU_SRC_Priority = "H";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Memory allocation failed"
+};
+Actions = {
+	"Increase the memory on the system",
+	"Verify driver software level"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string device_name;
+}
+
+event_type "%s: transmit timed out, status %4.4x, resetting.\n";
+eventName = "txTimeout";
+reportType = "SRC";
+servCode = "BF775802";
+FRU_SRC_Priority = "M";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver detected a hung transmit condition and is attempting"
+	" to recover."
+};
+Actions = {
+	"Verify driver software level"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string device_name;
+	uint status "%4.4x";
+}
+
+event_type "%s: Tx FIFO error! CSR0=%4.4x\n";
+eventName = "txFifo";
+reportType = "SRC";
+servCode = "BF775803";
+FRU_SRC_Priority = "M";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A FIFO error has occurred"
+};
+Actions = {
+	"Verify driver software level"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string device_name;
+	uint status "%4.4x";
+}
+
+event_type "%s: out-of-sync dirty pointer, %d vs. %d, full=%d.\n";
+eventName = "dirtyPtr";
+reportType = "SRC";
+servCode = "BF775804";
+FRU_SRC_Priority = "M";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The transmit pointers are out of synchronization"
+};
+Actions = {
+	"Verify driver software level"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string device_name;
+	uint dirty_value;
+	uint current_value;
+	int full_indication;
+}
+
+event_type "%s: Bus master arbitration failure, status %4.4x.\n";
+eventName = "arbitration";
+Class = HARDWARE;
+Type = INFO;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"none"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string device_name;
+	ushort status "%4.4x";
+}
+
+event_type "%s: Runt packet!\n";
+eventName = "runtPacket";
+Class = HARDWARE;
+Type = INFO;
+ProbableCauses = {
+	"A packet shorter than the minimum was received and discarded"
+};
+Actions = {
+	"none"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string device_name;
+}
+
+event_type "%s: Memory squeeze, deferring packet.\n";
+eventName = "nomemDeferRx";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Insufficient memory available for the packet"
+};
+Actions = {
+	"none"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string device_name;
+}

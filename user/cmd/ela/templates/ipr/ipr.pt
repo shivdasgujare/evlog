@@ -1,0 +1,778 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+typedef unsigned int u32;
+
+dev_printk "Failed to save PCI-X command register";
+eventName = "savePcixCmdReg";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Failed to setup PCI-X command register";
+eventName = "setupPcixCmdReg";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Host RCB failed with IOASC: 0x%08X";
+eventName = "hostRcb";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	u32 ioasc "%#08X";
+}
+
+dev_printk "Error notifications lost";
+eventName = "errorNotifLost";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Unknown error received. Overlay ID: %d";
+eventName = "unknownErrorRecd";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update device driver"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int overlay_id;
+}
+
+dev_printk "Adapter being reset due to command timeout";
+eventName = "adapterResetCmdTimeout";
+reportType = "SRC";
+servCode = "BF751C00";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Command timeout"
+};
+Actions = {
+	"1. Update adapter microcode",
+	"2. Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Invalid dump table format: %lx";
+eventName = "invalidDumpTableFmt";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	unsigned long mailbox "%lx";
+}
+
+dev_printk "Dump of IOA failed. Dump table not valid: %d, %X";
+eventName = "dumpIoaInvalidTable";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int dump_err;
+	u32 hdr_state "%X";
+}
+
+dev_printk "Firmware file %s not found";
+eventName = "noFwFile";
+reportType = "SRC";
+servCode = "BF751A00";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update adapter microcode"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string file_name;
+}
+
+dev_printk "Invalid microcode buffer";
+eventName = "invalidMcodeBuf";
+reportType = "SRC";
+servCode = "BF751A01";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update adapter microcode"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Microcode buffer allocation failed";
+eventName = "mcodeBufAlloc";
+reportType = "SRC";
+servCode = "BF751A02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update adapter microcode"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Microcode buffer copy to DMA buffer failed";
+eventName = "mcodeCopyDma";
+reportType = "SRC";
+servCode = "BF751A03";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update adapter microcode"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+ipr_printk "Dump memory allocation failed";
+eventName = "dumpMemAlloc";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+ipr_sdev_printk "Setting queue depth to %d";
+eventName = "setQDepth";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int qdepth;
+}
+
+ipr_sdev_printk "Enabling TCQing with queue depth %d";
+eventName = "enableTcq";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int qdepth;
+}
+
+ipr_sdev_printk "Disabling TCQing with queue depth %d";
+eventName = "disableTcq";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int qdepth;
+}
+
+ipr_sdev_printk "TCQing not supported to this device";
+eventName = "tcqNotSupported";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Adapter being reset as a result of error recovery";
+eventName = "adapterResetErrorRecov";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Permanent IOA failure. 0x%08X";
+eventName = "permIoaFail";
+reportType = "SRC";
+servCode = "BF751F00";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	u32 int_reg "%#08X";
+}
+
+dev_printk "Invalid response handle from IOA";
+eventName = "invalidHandleIoa";
+reportType = "SRC";
+servCode = "BF751F01";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "pci_map_sg failed!";
+eventName = "pciMapSg";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "pci_map_single failed!";
+eventName = "pciMapSingle";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+ipr_sdev_printk "Request Sense failed with IOASC: 0x%08X";
+eventName = "requestSense";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "IOA mode select buffer allocation failed";
+eventName = "ioaModeSelAlloc";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "IOA initialized";
+eventName = "ioaInit";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = UNKN;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Term power is absent on scsi bus %d";
+eventName = "noTermPower";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3050 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int bus_no;
+}
+
+dev_printk "Invalid resource address reported: 0x%08X";
+eventName = "invalidAddr";
+reportType = "SRC";
+servCode = "BF751C01";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"1. Update device driver",
+	"2. Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int res_addr "%#08X";
+}
+
+dev_printk "Microcode download required";
+eventName = "mcodeDloadReqd";
+reportType = "SRC";
+servCode = "BF751A04";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update adapter microcode"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Too many devices attached";
+eventName = "tooManyDevs";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Remove some attached devices"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Starting IOA initialization sequence";
+eventName = "startIoaInit";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "IOA unit check with no data";
+eventName = "ioaUnitCkNoData";
+reportType = "SRC";
+servCode = "BF751F02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Failed to map microcode download buffer";
+eventName = "mapMcodeDloadBuf";
+reportType = "SRC";
+servCode = "BF751A05";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update adapter microcode"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "IOA taken offline - error recovery failed.";
+eventName = "ioaOfflineRecovFail";
+reportType = "SRC";
+servCode = "BF751F03";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Adapter not supported in this hardware configuration";
+eventName = "adapterNotSupported";
+reportType = "SRC";
+servCode = "BF751F04";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Remove adapter from system - it is not supported"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Cannot enable adapter";
+eventName = "cantEnableAdapter";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "call to scsi_host_alloc failed";
+eventName = "hostAlloc";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Couldn't register memory range of registers";
+eventName = "cantRegisterMemRange";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Couldn't map memory range of registers";
+eventName = "cantMapMemRange";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Failed to set PCI DMA mask";
+eventName = "setPciDmaMask";
+reportType = "SRC";
+servCode = "BF751F05";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Write of cache line size failed";
+eventName = "wrCacheLineSz";
+reportType = "SRC";
+servCode = "BF751F06";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Failed to save PCI config space";
+eventName = "savePciCfgSpace";
+reportType = "SRC";
+servCode = "BF751F07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+dev_printk "Couldn't register IRQ %d! rc=%d";
+eventName = "cantRegisterIrq";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int irq;
+	int return_code;
+}
+
+dev_printk "Couldn't allocate enough memory for device driver";
+eventName = "allocDriver";
+File = "drivers/scsi/ipr.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}

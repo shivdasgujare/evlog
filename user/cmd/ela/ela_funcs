@@ -1,0 +1,203 @@
+#!/bin/bash
+
+ELA_REPORT_DIR=/var/evlog/ela_report
+HIST_FILE=/var/evlog/ela_report/hist
+MAX_REPORTS=25
+
+function get_ela_file_name ()
+{
+	local recid=$1
+	local nn=1
+	local ret=""
+	
+	if [ ! -e "${ELA_REPORT_DIR}" ]; then
+		mkdir -p $ELA_REPORT_DIR
+	fi
+	if [ -f "${HIST_FILE}" ]; then
+		nn=`cat ${HIST_FILE}`
+		let nn=$nn+1
+		if [ $nn -gt $MAX_REPORTS ]; then
+			let nn=1
+		fi
+	fi
+
+	echo ${nn} > ${HIST_FILE}
+
+	#
+	# Pad a 0 if nn is less than 10
+	#
+	if [ $nn -lt 10 ]; then
+		rpt_num=`echo $nn | sed 's/\([1-9]\)/0\1/'`
+	else
+        	rpt_num=$nn
+	fi
+	ret=$(ls ${ELA_REPORT_DIR}/ela_report*.dat${rpt_num})
+	
+	if [ ! -z "$ret" ]; then
+		$(rm -f ${ELA_REPORT_DIR}/ela_report*.dat${rpt_num})
+	fi
+
+	echo "${ELA_REPORT_DIR}/ela_report${recid}.dat${rpt_num}"
+}
+
+
+#
+# Event info gathering functions
+#
+#
+# begin_rec_get - Capture the event record with this recid and 
+# put it in our temporary storage - Subsequent get_* will work
+# of this temporary storage.
+# When done collecting information about this event, call 
+# end_rec_get  to destroy the temporary storage
+# 
+function begin_rec_get ()
+{
+	local filesize 
+	local filename
+	filename=/tmp/${1}${2}
+	
+	/bin/rm -f $filename
+	/sbin/evlview -f "recid=${2}" -o $filename
+	
+	if [ ! -e $filename ]; then
+		return 1
+	fi	
+
+	filesize=$( ls -l $filename | awk '{print $5}')
+	if [ $filesize -gt 20 ]; then
+		echo "Temp storage created"
+		return 0
+	fi
+	rm $filename 
+	return 1
+}
+
+#
+# end_rec_get - 
+# remove temporary storage
+#
+function end_rec_get ()
+{
+	echo "Remove temp storage"
+	/bin/rm -f /tmp/${1}${2}
+}
+
+function did_get_rec()
+{
+	local filename
+	filename=/tmp/${1}${2}
+	
+	if [ -e $filename ]; then
+		return 1
+	fi
+	return 0
+}
+
+function get_datetime ()
+{
+	/sbin/evlview -l /tmp/${1}${2} -S '%time%' -d '%m/%d/%Y %T'
+}
+
+function get_facility ()
+{
+	/sbin/evlview -l /tmp/${1}${2} -S '%facility%'
+}
+
+function get_event_type ()
+{
+	/sbin/evlview -l /tmp/${1}${2} -S '%event_type%'
+}
+
+function get_severity ()
+{
+	/sbin/evlview -l /tmp/${1}${2} -S '%severity%'
+}
+
+function get_event_non_std_att ()
+{
+	local att_name=$3
+	/sbin/evlview -l /tmp/${1}${2} -b -S "%${att_name}%"
+}
+
+function get_event_msg ()
+{
+	/sbin/evlview -l /tmp/${1}${2} -B -S '%data%'
+}
+
+#
+# Report generation functions
+#
+function new_report_date_time ()
+{
+	local date_time=`/bin/date "+%m/%d/%Y %T"`
+	echo "Date/Time: ${date_time}" > $1
+}
+
+function write_date_time ()
+{
+	local date_time=`/bin/date "+%D %T"`
+	echo "Date/Time: ${date_time}" >> $1
+}
+
+function write_SRN ()
+{
+	echo "SRN: ${2}" >> ${1}
+}
+
+function write_SRN_SRC ()
+{
+	echo "SRN_SRC: ${2}" >> ${1}
+}
+
+function write_msg_text ()
+{
+	echo "Text: ${2}" >> ${1}
+}
+
+function write_cat_info ()
+{
+	echo "Text(Catalog,set,message): ${2} ${3} ${4}" >> ${1}
+}
+
+function write_SRC_platform_tags ()
+{
+	echo "CreatorId:" >> ${1}
+	echo "PlatformId:" >> ${1}
+	echo "SubSystemId:" >> ${1}
+	echo "EventSeverity:" >> ${1}
+	echo "ActionFlags:" >> ${1}
+}
+
+
+function write_FRU ()
+{
+	echo -e "FRU(Location,FRU p/n,Ref-code): ${2}\t${3}\t${4}" >> ${1}
+}
+
+function write_FRU_SRC ()
+{
+	echo "FRU_SRC(priority,type,procedure,location,p/n,s/n,ccin):  ${2} ${3} ${4} ${5} ${6} ${7} ${8}" >> ${1}
+}
+
+function write_log_seq ()
+{
+	echo "Error Log Sequence Number: ${2}" >> ${1}
+}
+
+function write_menu_num ()
+{
+	echo "Menu Number: ${2}" >> ${1}
+}
+
+function write_menu_text ()
+{
+	echo "Text: ${3}" >> ${1}
+	echo "" >> ${1} 
+	echo "Check for the following:" >> ${1}
+	local menu_text=${2}
+	echo -e "${menu_text}" | awk '{print "\t" $0}' >> ${1}
+	echo "EndText" >> ${1}
+}
+
+

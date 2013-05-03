@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# This script will perform a touch test for the evlog package
+#
+export LANG=C
+TESTDIR=/var/evlog/test
+ARCH=i386
+
+if [ ! -z $1 ]
+then
+	ARCH=$1
+fi
+
+export EVL_TESTDIR=$TESTDIR
+$TESTDIR/testevlwrite.sh $ARCH
+$TESTDIR/testevlwrite2.sh
+$TESTDIR/testevlsend_b.sh
+$TESTDIR/aligntest.sh
+$TESTDIR/aostest.sh
+$TESTDIR/aosApiTest.sh
+#$TESTDIR/bftest.sh
+#$TESTDIR/bftestSN.sh
+$TESTDIR/defaultTest.sh $ARCH
+$TESTDIR/stattest.sh $ARCH
+$TESTDIR/tmplMiscTest.sh
+$TESTDIR/degenerate.sh
+$TESTDIR/delimiter.sh
+$TESTDIR/syslogatTest.sh
+$TESTDIR/runacttests.sh
+$TESTDIR/testevlog1.sh
+$TESTDIR/testfac1.sh
+$TESTDIR/testfac2.sh
+$TESTDIR/testfac3.sh
+$TESTDIR/logmgmt1.sh

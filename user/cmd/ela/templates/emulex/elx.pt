@@ -1,0 +1,3065 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+event_type 100;
+MSG "%sFLOGI failure Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"An ELS FLOGI command that was sent to the fabric failed."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 ulpStatus;
+	u32 ulpWord;
+}
+
+event_type 107;
+MSG "%sRetry ELS command x%x to remote NPORT x%x Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver is retrying the specific ELS command."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 els_cmd;
+	u32 nport;
+	int retry;
+	int delay;
+}
+
+event_type 108;
+MSG "%sNo retry ELS command x%x to remote NPORT x%x Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver decided not to retry the specific ELS command that failed."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 els_cmd;
+	u32 nport;
+	int retry;
+	u32 nlp_flag;
+}
+
+event_type 111;
+MSG "%sDropping received ELS cmd Data: x%x x%x"; 
+reportType = "SRC";
+servCode = "BF677A00";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver decided to drop an ELS Response ring entry."
+};
+Actions = {
+	"This error could indicate a software driver or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 ulpStatus;
+	u32 ulpWord;
+}
+
+event_type 113;
+MSG "%sAn FLOGI ELS command x%x was received from DID x%x in Loop Mode"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"While in Loop Mode an unknown or unsupported ELS commnad was received."
+};
+Actions = {
+	"Check device DID."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 els_cmd;
+	u32 scsi_id;
+}
+
+event_type 115;
+MSG "%sUnknown ELS command x%x received from NPORT x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Received an unsupported ELS command from a remote NPORT."
+};
+Actions = {
+	"Check remote NPORT for potential problem."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 els_cmd;
+	u32 nport;
+}
+
+event_type 127;
+MSG "%sELS timeout Data: x%x x%x x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+reportType = "SRC";
+servCode = "BF677800";
+FRU_SRC_Priority = "M";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"An ELS IOCB command was posted to a ring and did not complete within ULP timeout seconds."
+};
+Actions = {
+	"If no ELS command is going through the adapter, reboot the system; If problem persists, contact Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 elscmd;
+	u32 did;
+	u32 ulpcommand;
+	u32 iotag;
+}
+
+event_type 200;
+MSG "%sCONFIG_LINK bad hba state x%x";
+reportType = "SRC";
+servCode = "BF677704";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"A CONFIG_LINK mbox command completed and the driver was not in the right state."
+};
+Actions = {
+	"Software driver error. If this problem persists, report these errors to Technical Support."
+};
+Threshold = 2;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 state;
+}
+
+event_type 201;
+MSG "%sAbort outstanding I/O on NPort x%x Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"All outstanding I/Os are cleaned up on the specified remote NPort."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 nport;
+	u32 nlp_flag;
+	u32 nlp_state;
+	u32 nlp_rpi;
+}
+
+event_type 203;
+MSG "%sNodev timeout on NPort x%x Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"A remote NPort the was discovered by the driver disappeared for more than ELX_NODEV_TMO seconds."
+};
+Actions = {
+	"Check connections to Fabric / HUB or remote device."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 nport;
+	u32 nlp_flag;
+	u32 nlp_state;
+	u32 nlp_rpi;
+}
+
+event_type 208;
+MSG "%sFailmask change on NPort x%x Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"An event was processed that indicates the driver may not be able to communicate with the remote NPort."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 nport;
+	u32 nlp_failMask;
+	u32 bitmask;
+	u32 flag;
+}
+
+event_type 217;
+MSG "%sUnknown Identifier in RSCN payload Data: x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Typically the identifier in the RSCN payload specifies a domain, area or a specific NportID. If neither of these are specified, a warning will be recorded."
+};
+Actions = {
+	"Potential problem with Fabric. Check with Fabric vendor."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 rscn_id;
+}
+
+event_type 219;
+MSG "%sIssue FDMI request failed Data: x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Cannot issue FDMI request to HBA."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 cmdcode;
+}
+
+event_type 220;
+MSG "%sFDMI rsp failed Data: x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"An error response was received to FDMI request."
+};
+Actions = {
+	"The fabric does not support FDMI, check fabric configuration."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 fdmi_cmd;
+}
+
+event_type 221;
+MSG "%sFAN timeout"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A link up event was received without the login bit set, so the driver waits E_D_TOV for the Fabric to send a FAN. If no FAN is received, a FLOGI will be sent after the timeout."
+};
+Actions = {
+	"None required. The driver recovers from this condition by issuing a FLOGI to the Fabric."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 222;
+MSG "%sInitial FLOGI timeout"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The driver sent the initial FLOGI to fabric and never got a response back."
+};
+Actions = {
+	"Check Fabric configuration. The driver recovers from this and continues with device discovery."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 223;
+MSG "%sTimeout while waiting for NameServer login";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Our login request to the NameServer was not acknowledged within RATOV."
+};
+Actions = {
+	"Check Fabric configuration. The driver recovers from this and continues with device discovery."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 224;
+MSG "%sNameServer Query timeout Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Node authentication timeout, node Discovery timeout. A NameServer Query to the Fabric or discovery of reported remote NPorts is not acknowledged within R_A_TOV."
+};
+Actions = {
+	"Check Fabric configuration. The driver recovers from this and continues with device discovery."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 fc_ns_retry;
+	int fc_max_ns_retry;
+}
+
+event_type 226;
+MSG "%sDevice Discovery completion error"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"This indicates an uncorrectable error was encountered during device (re)discovery after a link up. Fibre Channel devices will not be accessible if this message is displayed."
+};
+Actions = {
+	"Reboot system. If problem persists, contact Technical Support. Run with verbose mode on for more details."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 227;
+MSG "%sNode Authentication timeout"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver has lost track of what NPORTs are being authenticated."
+};
+Actions = {
+	"None required. Driver should recover from this event."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 228;
+MSG "%sCLEAR LA timeout"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver issued a CLEAR_LA that never completed."
+};
+Actions = {
+	"None required. Driver should recover from this event."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 230;
+MSG "%sCannot assign scsi ID on NPort x%x Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver cannot assign a scsi id to a discovered mapped FCP target."
+};
+Actions = {
+	"Check persistent binding information."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 nport;
+	u32 nlp_flag;
+	u32 nlp_state;
+	u32 nlp_rpi;
+}
+
+event_type 231;
+MSG "%sRSCN timeout Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver has lost track of what NPORTs have RSCNs pending."
+};
+Actions = {
+	"None required. Driver should recover from this event."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 fc_ns_retry;
+	int fc_max_ns_retry;
+}
+
+event_type 234;
+MSG "%sReDiscovery RSCN Data: x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The number / type of RSCNs has forced the driver to go to the nameserver and re-discover all NPORTs."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 q_cnt;
+	int fc_flag;
+	u32 hba_state;
+}
+
+event_type 237;
+MSG "%sPending Link Event during Discovery Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Received link event during discovery Causes discovery restart."
+};
+Actions = {
+	"None required unless problem persist. If persistent check cabling."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 hba_state;
+	u32 ulpIoTag;
+	u32 ulpStatus;
+	u32 ulpWord;
+}
+
+event_type 240;
+MSG "%sNameServer Rsp Error Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The driver received a nameserver response containing a status error."
+};
+Actions = {
+	"Check Fabric configuration. The driver recovers from this and continues with device discovery."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 bits;
+	u32 ReasonCode;
+	u32 Explanation;
+	int fc_flag;
+}
+
+event_type 241;
+MSG "%sNameServer Rsp Error Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The driver received a nameserver response containing a status error."
+};
+Actions = {
+	"Check Fabric configuration. The driver recovers from this and continues with device discovery."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 bits;
+	u32 ReasonCode;
+	u32 Explanation;
+	int fc_flag;
+}
+
+event_type 243;
+MSG "%sIssue FDMI request failed Data: x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Cannot issue FDMI request to HBA."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 cmdcode;
+}
+
+event_type 244;
+MSG "%sIssue FDMI request failed Data: x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Cannot issue FDMI request to HBA."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 cmdcode;
+}
+
+event_type 245;
+MSG "%sALPA based bind method used on an HBA which is in a nonloop topology Data: x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"ALPA based bind method used on an HBA which is not in a loop topology."
+};
+Actions = {
+	"Change the bind method configuration parameter of the HBA to 1(WWNN) or 2(WWPN) or 3(DID)."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int topology;
+}
+
+event_type 300;
+MSG "%sREAD_LA: no buffers"; 
+reportType = "SRC";
+servCode = "BF677704";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver attempted to issue READ_LA mailbox command to the HBA but there were no buffer available."
+};
+Actions = {
+	"This message indicates (1) a possible lack of memory resources. Try increasing the lpfc 'num_bufs' configuration parameter to allocate more buffers. (2) A possible driver buffer management problem. If this problem persists, report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 60;
+attributes {
+	string prefix;
+}
+
+event_type 301;
+MSG "%sREAD_SPARAM: no buffers";
+reportType = "SRC";
+servCode = "BF677801";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver attempted to issue READ_SPARAM mailbox command to the HBA but there were no buffer available."
+};
+Actions = {
+	"This message indicates (1) a possible lack of memory resources. Try increasing the lpfc 'num_bufs' configuration parameter to allocate more buffers. (2) A possible driver buffer management problem. If this problem persists, report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 60;
+attributes {
+	string prefix;
+}
+
+event_type 302;
+MSG "%sREG_LOGIN: no buffers Data x%x x%x";
+reportType = "SRC";
+servCode = "BF677802";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver attempted to issue REG_LOGIN mailbox command to the HBA but there were no buffer available."
+};
+Actions = {
+	"This message indicates (1) a possible lack of memory resources. Try increasing the lpfc 'num_bufs' configuration parameter to allocate more buffers. (2) A possible driver buffer management problem. If this problem persists, report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 60;
+attributes {
+	string prefix;
+	u32 did;
+	u32 flag;
+}
+
+event_type 304;
+MSG "%sStray Mailbox Interrupt mbxCommand x%x mbxStatus x%x";
+reportType = "SRC";
+servCode = "BF677A01";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Received a mailbox completion interrupt and there are no outstanding mailbox commands."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 mbxCommand;
+	u32 mbxStatus;
+}
+
+event_type 305;
+MSG "%sMbox cmd cmpl error - RETRYing Data: x%x x%x x%x x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A mailbox command completed with an error status that causes the driver to reissue the mailbox command."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 mbxCommand;
+	u32 mbxStatus;
+	u32 word1;
+	u32 hba_state;
+}
+
+event_type 306;
+MSG "%sCONFIG_LINK mbxStatus error x%x HBA state x%x";
+reportType = "SRC";
+servCode = "BF677A02";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver issued a CONFIG_LINK mbox command to the HBA that failed."
+};
+Actions = {
+	"This error could indicate a firmware or hardware problem. Report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int error;
+	u32 state;
+}
+
+event_type 310;
+MSG "%sMailbox command x%x timeout Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"A Mailbox command was posted to the adapter and did not complete within 30 seconds."
+};
+Actions = {
+	"(1) This error could indicate a software driver or firmware problem. If no I/O is going through the adapter, reboot the system.",
+	"(2) If these problems persist, report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 mb_cmd;
+	u32 hba_state;
+	u32 sli_flag;
+	u32 mbox_active;
+}
+
+event_type 311;
+MSG "%sMailbox command x%x cannot issue Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Driver is in the wrong state to issue the specified command."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 mb_cmd;
+	u32 hba_state;
+	u32 sli_flag;
+	u32 flag;
+}
+
+event_type 312;
+MSG "%sRing %d handler: portRspPut %d is bigger then rsp ring %d"; 
+reportType = "SRC";
+servCode = "BF677803";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Port rsp ring put index is > size of rsp ring."
+};
+Actions = {
+	"This error could indicate a software driver, firmware or hardware problem. Report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int Ring;
+	u32 portRspPut;
+	u32 ring;
+}
+
+event_type 313;
+MSG "%sRing %d handler: unexpected Rctl x%x Type x%x received ";
+reportType = "SRC";
+servCode = "BF677804";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The Rctl/Type of a received frame did not match any for the configured masks for the specified ring."
+};
+Actions = {
+	"This error could indicate a software driver or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int Ring;
+	u32 rctl;
+	u32 type;
+}
+
+event_type 314;
+MSG "%sRing %d issue: portCmdGet %d is bigger then cmd ring %d"; 
+reportType = "SRC";
+servCode = "BF677803";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Port cmd ring get index is > size of cmd ring."
+};
+Actions = {
+	"This error could indicate a software driver, firmware or hardware problem. Report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int Ring;
+	u32 cmd;
+	int ring;
+}
+
+event_type 315;
+MSG "%sRing %d issue: portCmdGet %d is bigger then cmd ring %d"; 
+reportType = "SRC";
+servCode = "BF677803";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Port cmd ring get index is > size of cmd ring."
+};
+Actions = {
+	"This error could indicate a software driver or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int Ring;
+	u32 cmd;
+	int ring;
+}
+
+event_type 316;
+MSG "%sCmd ring %d put: iotag x%x greater then configured max x%x wd0 x%x";
+reportType = "SRC";
+servCode = "BF677803";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The assigned I/O iotag is > the max allowed."
+};
+Actions = {
+	"This error could indicate a software driver problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int ring;
+	u32 els_cmd;
+	u32 max;
+	u32 wd0;
+}
+
+event_type 317;
+MSG "%sRsp ring %d get: iotag x%x greater then configured max x%x wd0 x%x";
+reportType = "SRC";
+servCode = "BF677803";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The assigned I/O iotag is > the max allowed."
+};
+Actions = {
+	"This error could indicate a software driver problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int ring;
+	u32 els_cmd;
+	u32 max;
+	u32 wd0;
+}
+
+event_type 318;
+MSG "%sOutstanding I/O count for ring %d is at max x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"We cannot assign an I/O tag because none are available Max allowed I/Os are currently outstanding."
+};
+Actions = {
+	"This message indicates the adapter hba I/O queue is full. Typically this happens if you are running heavy I/O on a low-end (3 digit) adapter. Suggest you upgrade to our high-end adapter."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int ring;
+	u32 max;
+}
+
+event_type 319;
+MSG "%sREAD_SPARAM mbxStatus error x%x hba state x%x>";
+reportType = "SRC";
+servCode = "BF677A03";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver issued a READ_SPARAM mbox command to the HBA that failed."
+};
+Actions = {
+	"This error could indicate a firmware or hardware problem. Report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int error;
+	u32 state;
+}
+
+event_type 320;
+MSG "%sCLEAR_LA mbxStatus error x%x hba state x%x";
+reportType = "SRC";
+servCode = "BF677A04";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver issued a CLEAR_LA mbox command to the HBA that failed."
+};
+Actions = {
+	"This error could indicate a firmware or hardware problem. Report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int error;
+	u32 state;
+}
+
+event_type 321;
+MSG "%sUnknown IOCB command Data: x%x x%x x%x x%x"; 
+reportType = "SRC";
+servCode = "BF677805";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Received an unknown IOCB command completion."
+};
+Actions = {
+	"This error could indicate a software driver or firmware problem. If these problems persist, report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int ulpCommand;
+	u32 ulpStatus;
+	u32 ulpIoTag;
+	int ulpContext);
+}
+
+event_type 322;
+MSG "%sRing %d handler: unexpected completion IoTag x%x Data: x%x x%x x%x x%x";
+reportType = "SRC";
+servCode = "BF677806";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver could not find a matching command for the completion received on the specified ring."
+};
+Actions = {
+	"This error could indicate a software driver or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int Ring;
+	u32 tag;
+	u32 ulpStatus;
+	u32 ulpWord;
+	int ulpCommand;
+	int ulpContext;
+}
+
+event_type 323;
+MSG "%sUnknown Mailbox command %x Cmpl";
+reportType = "SRC";
+servCode = "BF677807";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"A unknown mailbox command completed."
+};
+Actions = {
+	"This error could indicate a software driver, firmware or hardware problem. Report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 mb_cmd;
+}
+
+event_type 324;
+MSG "%sConfig Port initialization error, mbxCmd x%x READ_NVPARM, mbxStatus x%x";
+reportType = "SRC";
+servCode = "BF677A05";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"A read nvparams mailbox command failed during config port."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 406;
+MSG "%sMemory Buffer Pool is below low water mark Data x%x x%x x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A driver memory buffer pool is low on buffers."
+};
+Actions = {
+	"None required. Driver will recover as buffers are returned to pool."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int Data;
+	int x%x;
+	int x%x;
+}
+
+event_type 407;
+MSG "%sMemory Buffer Pool is at its high water mark Data x%x x%x x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A memory buffer pool cannot add more buffers because it is at its himem value."
+};
+Actions = {
+	"None required. Driver will recover as buffers are returned to pool."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 seg;
+	u32 q_cnt;
+	u32 himem;
+}
+
+event_type 409;
+MSG "%sMemory Buffer Pool is out of buffers Data x%x x%x x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"A driver memory buffer pool is exhausted."
+};
+Actions = {
+	"Configure more resources for that buffer pool. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 seg;
+	u32 q_cnt;
+	u32 q_max;
+}
+
+event_type 410;
+MSG "%sCannot find virtual addr for mapped buf on ring %d Data x%x x%x x%x x%x";
+reportType = "SRC";
+servCode = "BF677A06";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver cannot find the specified buffer in its mapping table. Thus it cannot find the virtual address needed to access the data."
+};
+Actions = {
+	"This error could indicate a software driver or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int ring;
+	u64 first;
+	u32 q_first;
+	u32 q_last;
+	u32 q_cnt;
+}
+
+event_type 411;
+MSG "%sfcp_bind_method is 4 with Persistent binding - ignoring fcp_bind_method Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for fcp_bind_method conflicts with Persistent binding parameter."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	u32 fcp_mapping;
+}
+
+event_type 412;
+MSG "%sScan-down is out of range - ignoring scan-down Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Scan-down is out of range."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	u32 fcp_mapping;
+}
+
+event_type 413;
+MSG "%sNum-iocbs too low, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Num-iocs is too low, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MIN_NUM_IOCBS;
+}
+
+event_type 414;
+MSG "%sNum-iocbs too high, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Num-iocs is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_NUM_IOCBS;
+}
+
+event_type 415;
+MSG "%sNum-bufs too low, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Num-bufs is too low, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MIN_NUM_BUFS;
+}
+
+event_type 416;
+MSG "%sNum-bufs too high, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Num-bufs is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_NUM_BUFS;
+}
+
+event_type 417;
+MSG "%sTarget qdepth too high, resetting to max Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Target queue depth is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_TGT_Q_DEPTH;
+}
+
+event_type 418;
+MSG "%sLUN qdepth too high, resetting to max Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for LUN queue depth is too high, resetting parameter to maximum default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	u32 LPFC_MAX_LUN_Q_DEPTH;
+}
+
+event_type 419;
+MSG "%sLUN qdepth cannot be %d, resetting to 1";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for LUN queue depth is set to 0 Resetting parameter to default value of 1."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+}
+
+event_type 420;
+MSG "%sExtra_io_tmo too high, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Extra_io_tmo is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_EXTRA_IO_TIMEOUT;
+}
+
+event_type 421;
+MSG "%sFcp-class is illegal, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Fcp-class is illegal, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int CLASS3;
+}
+
+event_type 422;
+MSG "%sNo-device-delay too high, resetting to max Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for No-device-delay is too high, resetting parameter to maximum default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_NO_DEVICE_DELAY;
+}
+
+event_type 423;
+MSG "%sPost_ip_buf too low, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Post_ip_buf is too low, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MIN_POST_IP_BUF;
+}
+
+event_type 424;
+MSG "%sPost_ip_buf too high, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Post_ip_buf is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_POST_IP_BUF;
+}
+
+event_type 425;
+MSG "%sXmt-que_size too low, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Xmt-que_size is too low, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MIN_XMT_QUE_SIZE;
+}
+
+event_type 426;
+MSG "%sXmt-que_size too high, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Xmt-que_size is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_XMT_QUE_SIZE;
+}
+
+event_type 427;
+MSG "%sIp-class is illegal, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Ip-class is illegal, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int CLASS3;
+}
+
+event_type 428;
+MSG "%sTopology is illegal, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Topology is illegal, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_DFT_TOPOLOGY;
+}
+
+event_type 429;
+MSG "%sLinkdown_tmo too high, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Linkdown_tmo is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_LNKDWN_TIMEOUT;
+}
+
+event_type 430;
+MSG "%sWWPN binding entry %d: Syntax error code %d";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"A syntax error occured while parsing WWPN binding configuration information."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int entry;
+	int code;
+}
+
+event_type 431;
+MSG "%sWWNN binding entry %d: Syntax error code %d";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"A syntax error occured while parsing WWNN binding configuration information."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int entry;
+	int code;
+}
+
+event_type 432;
+MSG "%sWWPN binding entry: node table full";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"More bindings entries were configured than the driver can handle."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file such that fewer bindings are configured."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 433;
+MSG "%sWWNN binding entry: node table full";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"More bindings entries were configured than the driver can handle."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file such that fewer bindings are configured."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 434;
+MSG "%sDID binding entry %d: Syntax error code %d";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"A syntax error occured while parsing DID binding configuration information."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int entry;
+	int code;
+}
+
+event_type 435;
+MSG "%sDID binding entry: node table full";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"More bindings entries were configured than the driver can handle."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file such that fewer bindings are configured."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 436;
+MSG "%sAdapter failed to init, timeout, status reg x%x"; 
+reportType = "SRC";
+servCode = "BF677A07";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The adapter failed during powerup diagnostics after it was reset."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int reg;
+}
+
+event_type 437;
+MSG "%sAdapter failed to init, chipset, status reg x%x"; 
+reportType = "SRC";
+servCode = "BF677A08";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The adapter failed during powerup diagnostics after it was reset."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int reg;
+}
+
+event_type 438;
+MSG "%sAdapter failed to init, chipset, status reg x%x"; 
+reportType = "SRC";
+servCode = "BF677102";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The adapter failed during powerup diagnostics after it was reset."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	int reg;
+}
+
+event_type 439;
+MSG "%sAdapter failed to init, mbxCmd x%x READ_REV, mbxStatus x%x";
+reportType = "SRC";
+servCode = "BF677A09";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter initialization failed when issuing READ_REV mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 440;
+MSG "%sAdapter failed to init, mbxCmd x%x READ_REV detected outdated firmware Data: x%x"; 
+reportType = "SRC";
+servCode = "BF677A0A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Outdated firmware was detected during initialization."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. Update firmware. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 mbx_cmd;
+	int read_rev_reset;
+}
+
+event_type 441;
+MSG "%sAdapter failed to init, mbxCmd x%x DUMP VPD, mbxStatus x%x";
+reportType = "SRC";
+servCode = "BF677A0B";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Adapter initialization failed when issuing DUMP_VPD mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 442;
+MSG "%sAdapter failed to init, mbxCmd x%x CONFIG_PORT, mbxStatus x%x Data: x%x"; 
+reportType = "SRC";
+servCode = "BF677A0C";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter initialization failed when issuing CONFIG_PORT mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+	int hbainit;
+}
+
+event_type 446;
+MSG "%sAdapter failed to init, mbxCmd x%x CFG_RING, mbxStatus x%x, ring %d";
+reportType = "SRC";
+servCode = "BF677A0D";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter initialization failed when issuing CFG_RING mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+	int ring;
+}
+
+event_type 447;
+MSG "%sAdapter failed init, mbxCmd x%x CONFIG_LINK mbxStatus x%x"; 
+reportType = "SRC";
+servCode = "BF677A0E";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter initialization failed when issuing CONFIG_LINK mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 448;
+MSG "%sAdapter failed init, mbxCmd x%x READ_SPARM mbxStatus x%x"; 
+reportType = "SRC";
+servCode = "BF677A0F";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter initialization failed when issuing READ_SPARM mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 449;
+MSG "%sWorldWide PortName Type x%x doesn't conform to IP Profile"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"In order to run IP, the WorldWide PortName must be of type IEEE (NAA = 1). This message displays if the adapter WWPN doesn't conform with the standard."
+};
+Actions = {
+	"Turn off the network-on configuration parameter or configure a different WWPN."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 type;
+}
+
+event_type 450;
+MSG "%sAdapter failed to init, mbxCmd x%x FARP, mbxStatus x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Adapter initialization failed when issuing FARP mailbox command."
+};
+Actions = {
+	"None required."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 451;
+MSG "%sEnable interrupt handler failed"; 
+reportType = "SRC";
+servCode = "BF677809";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver attempted to register the HBA interrupt service routine with the host operating system but failed."
+};
+Actions = {
+	"This error could indicate a hardware or driver problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+}
+
+event_type 453;
+MSG "%sAdapter failed to init, mbxCmd x%x READ_CONFIG, mbxStatus x%x"; 
+reportType = "SRC";
+servCode = "BF677A10";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter initialization failed when issuing READ_CONFIG mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 454;
+MSG "%sAdapter failed to init, mbxCmd x%x INIT_LINK, mbxStatus x%x";
+reportType = "SRC";
+servCode = "BF677A11";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter initialization failed when issuing INIT_LINK mailbox command."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 cmd;
+	u32 mbxStatus;
+}
+
+event_type 455;
+MSG "%sVital Product Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Vital Product Data (VPD) contained in HBA flash."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 vpd0;
+	u32 vpd1;
+	u32 vpd2;
+	u32 vpd3;
+}
+
+event_type 457;
+MSG "%sAdapter Hardware Error Data: x%x x%x x%x"; 
+reportType = "SRC";
+servCode = "BF677A12";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver received an interrupt indicting a possible hardware problem."
+};
+Actions = {
+	"This error could indicate a hardware or firmware problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 status;
+	u32 status1;
+	u32 status2;
+}
+
+event_type 461;
+MSG "%sHBA qdepth too high, resetting to max Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for HBA queue depth is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_HBA_Q_DEPTH;
+}
+
+event_type 462;
+MSG "%sToo many cmd / rsp ring entries in SLI2 SLIM Data: x%x x%x";
+reportType = "SRC";
+servCode = "BF677808";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Scan-down is out of range."
+};
+Actions = {
+	"Software driver error. If this problem persists, report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int totiocb;
+	int MAX_SLI2_IOCB;
+}
+
+event_type 463;
+MSG "%sNodev-tmo too high, resetting Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The configuration parameter for Nodev-tmo is too high, resetting parameter to default value."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 a_current;
+	int LPFC_MAX_NODEV_TIMEOUT;
+}
+
+event_type 602;
+MSG "%sIP Response Ring %d out of posted buffers Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The IP ring returned all posted buffers to the driver and is waiting for the driver to post new buffers. This could mean the host system is out of TCP/IP buffers."
+};
+Actions = {
+	"(1) Try allocating more IP buffers (STREAMS buffers or mbufs) of size 4096 and/or increasing the post-ip-buf lpfc configuration parameter.",
+	"(2) Reboot the system."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int Ring;
+	u32 fc_missbufcnt;
+	u32 NoRcvBuf;
+}
+
+event_type 603;
+MSG "%sXmit Sequence completion error Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A XMIT_SEQUENCE command completed with a status error in the IOCB."
+};
+Actions = {
+	"If there are many errors to one device, check physical connections to Fibre Channel network and the state of the remote PortID. The driver attempts to recover by creating a new exchange to the remote device."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 ulpStatus;
+	u32 ulpIoTag;
+	u32 ulpWord;
+	u32 did;
+}
+
+event_type 604;
+MSG "%sPost buffer for IP ring %d failed Data: x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver cannot allocate a buffer to post to the IP ring. This usually means the host system is out of TCP/IP buffers."
+};
+Actions = {
+	"(1) Try allocating more IP buffers (STREAMS buffers or mbufs) of size 4096.",
+	"(2) Reboot the system."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 ring;
+	u32 missbufcnt;
+}
+
+event_type 605;
+MSG "%sNo room on IP xmit queue Data: x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The system is generating IOCB commands to be processed faster than the adapter can process them."
+};
+Actions = {
+	"(1) Check the state of the link. If the link is up and running, reconfigure the xmit queue size to be larger. Note, a larger queue size may require more system IP buffers.",
+	"(2) If the link is down, check physical connections to Fibre Channel network."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 xmitnoroom;
+}
+
+event_type 608;
+MSG "%sIP packet timed out Data: x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"An IP IOCB command was posted to a ring and did not complete within timeout seconds."
+};
+Actions = {
+	"(1) If no IP packet is going through the adapter, reboot the system;",
+	"(2) If problem persists, contact Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 Did;
+}
+
+event_type 609;
+MSG "%sIP buffer-DMA address mismatch Data: x%llx x%llx x%llx x%llx";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"An IP buffer free operation found a mismatch between an IP buffer and its dma address."
+};
+Actions = {
+	"Stop traffic and reboot the system."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 pib;
+	u32 ip_buff_found;
+	u32 ip_buff_actual;
+	u64 dma_address;
+}
+
+event_type 610;
+MSG "%sFARP Request sent to remote HW Address %02x-%02x-%02x-%02x-%02x-%02x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A send to a remote IP address has no node in the driver's nodelists Send a FARP request to obtain the node's HW address."
+};
+Actions = {
+	"Issue FARP and wait for PLOGI from remote node."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 ieee0;
+	u32 ieee1;
+	u32 ieee2;
+	u32 ieee3;
+	u32 ieee4;
+	u32 ieee5;
+}
+
+event_type 700;
+MSG "%sStart nodev timer Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A target disappeared from the Fibre Channel network. If the target does not return within nodev-tmo timeout all I/O to the target will fail."
+};
+Actions = {
+	"Check state of the device."
+};
+Threshold = 3;
+Interval = 24;
+attributes {
+	string prefix;
+	u32 nlp_DID;
+	u32 nlp_flag;
+	u32 nlp_state;
+	int nlp;
+}
+
+event_type 701;
+MSG "%sIssue Abort Task Set to TGT %d LUN %d Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The SCSI layer detected that it needs to abort all I/O to a specific device. This results in an FCP Task Management command to abort the I/O in progress."
+};
+Actions = {
+	"Check state of device in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 TGT;
+	u32 lun;
+	u32 nlp_rpi;
+	u32 flags;
+}
+
+event_type 702;
+MSG "%sIssue Target Reset to TGT %d Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The SCSI layer detected that it needs to abort all I/O to a specific target. This results in an FCP Task Management command to abort the I/O in progress."
+};
+Actions = {
+	"Check state of target in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 TGT;
+	u32 nlp_rpi;
+	u32 flags;
+}
+
+event_type 703;
+MSG "%sIssue LUN Reset to TGT %d LUN %d Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The SCSI layer detected that it needs to abort all I/O to a specific device. This results in an FCP Task Management command to abort the I/O in progress."
+};
+Actions = {
+	"Check state of device in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 TGT;
+	u32 lun;
+	u32 nlp_rpi;
+	u32 flags;
+}
+
+event_type 706;
+MSG "%sStart nodev timer Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A target disappeared from the Fibre Channel network. If the target does not return within nodev-tmo timeout all I/O to the target will fail."
+};
+Actions = {
+	"Check target device."
+};
+Threshold = 3;
+Interval = 24H;
+attributes {
+	string prefix;
+	u32 nlp_DID;
+	u32 nlp_flag;
+	u32 nlp_state;
+	u32 nlp;
+}
+
+event_type 710;
+MSG "%sIodone <%d/%d> error x%x SNS x%x x%x Data: x%x x%x";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"This error indicates the FC driver is returning SCSI command to the SCSI layer in error or with sense data."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 scsi_target;
+	u32 scsi_lun;
+	int result;
+	u32 SNS_lp;
+	u32 SNS_lp3;
+	int retry;
+	int resid;
+}
+
+event_type 712;
+MSG "%sSCSI layer issued abort device Data: x%x x%x";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The SCSI layer is requesting the driver to abort I/O to a specific device."
+};
+Actions = {
+	"Check state of device in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 target;
+	u32 lun;
+}
+
+event_type 713;
+MSG "%sSCSI layer issued Target Reset Data: x%x x%x";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The SCSI layer is requesting the driver to abort I/O to a specific target."
+};
+Actions = {
+	"Check state of target in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 target;
+	u32 lun;
+}
+
+event_type 714;
+MSG "%sSCSI layer issued Bus Reset";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The SCSI layer is requesting the driver to abort all I/Os to all targets on this HBA."
+};
+Actions = {
+	"Check state of targets in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 716;
+MSG "%sFCP Read Underrun, expected %d, residual %d Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"FCP device provided less data than was requested."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int expected;
+	u32 scsi_id;
+	u32 fcpi_parm;
+	int cmnd;
+	int underflow;
+}
+
+event_type 717;
+MSG "%sFCP command x%x residual underrun converted to error Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver convert this underrun condition to an error based on the underflow field in the SCSI cmnd."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 els_cmd;
+	u32 len;
+	u32 resid;
+	u32 underflow;
+}
+
+event_type 725;
+MSG "%sInquiry Serial Number: invalid length Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"An INQUIRY SN command completed with an invalid serail number length."
+};
+Actions = {
+	"Check remote NPORT for potential problem."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 sizeSN;
+	u32 j;
+	u32 scsi_id;
+	u32 lun_id;
+}
+
+event_type 728;
+MSG "%sINQUIRY Page 0 cmd failed Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The INQUIRY (page 0) failed."
+};
+Actions = {
+	"Check if target device supports this command."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 ulpStatus;
+	u32 fcpi_parm;
+	u32 scsi_id;
+	u32 lun_id;
+}
+
+event_type 729;
+MSG "%sFCP cmd x%x failed <%d/%d> status: x%x result: x%x Data: x%x x%x";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The specifed device failed an FCP command."
+};
+Actions = {
+	"Check the state of the target in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 els_cmd;
+	u32 scsi_target;
+	u32 scsi_lun;
+	u32 status:;
+	u32 result;
+	u32 xri;
+	u32 iotag;
+}
+
+event_type 730;
+MSG "%sFCP command failed: RSP Data: x%x x%x x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The FCP command failed with a response error."
+};
+Actions = {
+	"Check the state of the target in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 Status2;
+	u32 Status3;
+	u32 ResId;
+	u32 SnsLen;
+	u32 RspLen;
+	u32 Info3;
+}
+
+event_type 734;
+MSG "%sFCP Read Check Error Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The issued FCP command returned a Read Check Error."
+};
+Actions = {
+	"Check the state of the target in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 fcpDl;
+	u32 rspResId;
+	u32 fcpi_parm;
+	u32 cdb;
+}
+
+event_type 735;
+MSG "%sFCP Read Check Error with Check Condition Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The issued FCP command returned a Read Check Error and a Check condition."
+};
+Actions = {
+	"Check the state of the target in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 fcpDl;
+	u32 rspResId;
+	u32 fcpi_parm;
+	u32 cdb;
+}
+
+event_type 736;
+MSG "%sRecieved Queue Full status from FCP device %d %d Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Recieved a Queue Full error status from specified FCP device."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 scsi_target;
+	u32 scsi_lun;
+	u32 qfull_retry_count;
+	u32 qfull_retries;
+	u32 currentOutstanding;
+	u32 maxOutstanding;
+}
+
+event_type 737;
+MSG "%sx%x Check condition received Data: x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The issued FCP command resulted in a Check Condition."
+};
+Actions = {
+	"No action needed, informational."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 cc;
+	u32 CFG_CHK_COND_ERR;
+	u32 CFG_DELAY_RSP_ERR;
+	u32 *lp;
+}
+
+event_type 753;
+MSG "%sInquiry Serial Number: invalid length Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"An INQUIRY SN command completed with an invalid serail number length."
+};
+Actions = {
+	"Check state of target in question."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 sizeSN;
+	u32 j;
+	u32 scsi_id;
+	u32 lun_id;
+}
+
+event_type 754;
+MSG "%sSCSI timeout Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"An FCP IOCB command was posted to a ring and did not complete within ULP timeout seconds."
+};
+Actions = {
+	"(1) If no I/O is going through the adapter, reboot the system.",
+	"(2) If problem persists, contact Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 did;
+	u32 sid;
+	u32 command;
+	u32 iotag;
+}
+
+event_type 1200;
+MSG "%sCannot unload driver, application still attached Data: x%x x%x";
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"An attempt was made to unload the driver while the DFC interface was active."
+};
+Actions = {
+	"Exit any application that uses the DFC diagnostic interface before attempting to unload the driver."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	long lpfcdiag_cnt;
+	u32 instance;
+}
+
+event_type 1201;
+MSG "%slinux_kmalloc: Bad phba Data: x%x x%x x%x";
+reportType = "SRC";
+servCode = "BF67780A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver manages its own memory for internal usage. This error indicates a problem occurred in the driver memory management routines. This error could also indicate the host system in low on memory resources."
+};
+Actions = {
+	"This error could indicate a driver or host operating system problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 size;
+	u32 type;
+	int fc_idx_dmapool;
+}
+
+event_type 1202;
+MSG "%slinux_kmalloc: Bad size Data: x%x x%x x%x";
+reportType = "SRC";
+servCode = "BF67780A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver manages its own memory for internal usage. This error indicates a problem occurred in the driver memory management routines. This error could also indicate the host system in low on memory resources."
+};
+Actions = {
+	"This error could indicate a driver or host operating system problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 size;
+	u32 type;
+	int fc_idx_dmapool;
+}
+
+event_type 1204;
+MSG "%slinux_kmalloc: Bad virtual addr Data: x%x x%x x%x x%x";
+reportType = "SRC";
+servCode = "BF67780A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver manages its own memory for internal usage. This error indicates a problem occurred in the driver memory management routines. This error could also indicate the host system in low on memory resources."
+};
+Actions = {
+	"This error could indicate a driver or host operating system problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int i;
+	u32 size;
+	u32 type;
+	int fc_idx_dmapool;
+}
+
+event_type 1205;
+MSG "%slinux_kmalloc: dmapool FULL Data: x%x x%x x%x x%x";
+reportType = "SRC";
+servCode = "BF67780A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver manages its own memory for internal usage. This error indicates a problem occurred in the driver memory management routines. This error could also indicate the host system in low on memory resources."
+};
+Actions = {
+	"This error could indicate a driver or host operating system problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int i;
+	u32 size;
+	u32 type;
+	int fc_idx_dmapool;
+}
+
+event_type 1206;
+MSG "%slinux_kfree: Bad phba Data: x%x x%x";
+reportType = "SRC";
+servCode = "BF67780A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver manages its own memory for internal usage. This error indicates a problem occurred in the driver memory management routines. This error could also indicate the host system in low on memory resources."
+};
+Actions = {
+	"This error could indicate a driver or host operating system problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 size;
+	int fc_idx_dmapool;
+}
+
+event_type 1207;
+MSG "%slinux_kfree: NOT in dmapool Data: x%x x%x x%x";
+reportType = "SRC";
+servCode = "BF67780A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/lpfc/prod_linux.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver manages its own memory for internal usage. This error indicates a problem occurred in the driver memory management routines. This error could also indicate the host system in low on memory resources."
+};
+Actions = {
+	"This error could indicate a driver or host operating system problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 virt;
+	u32 size;
+	int fc_idx_dmapool;
+}
+
+event_type 1208;
+MSG "%sC_CT Request error Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The CT response returned more data than the user buffer could hold."
+};
+Actions = {
+	"Modify user application issuing CT request to allow for a larger response buffer."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 dfc_flag;
+	int 4096;
+}
+
+event_type 1210;
+MSG "%sConvert ASC to hex. Input byte cnt < 1"; 
+reportType = "SRC";
+servCode = "BF67780B";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"ASCII string to hex conversion failed Input byte count < 1."
+};
+Actions = {
+	"This error could indicate a software driver problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 1211;
+MSG "%sConvert ASC to hex. Input byte cnt > max %d"; 
+reportType = "SRC";
+servCode = "BF67780B";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"ASCII string to hex conversion failed Input byte count > max <num>."
+};
+Actions = {
+	"This error could indicate a software driver problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int max;
+}
+
+event_type 1212;
+MSG "%sConvert ASC to hex. Output buffer too small"; 
+reportType = "SRC";
+servCode = "BF67780B";
+FRU_SRC_Priority = "M";
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"ASCII string to hex conversion failed The output buffer byte size is less than 1/2 of input byte count. Every 2 input chars (bytes) require 1 output byte."
+};
+Actions = {
+	"This error could indicate a software driver problem. If problems persist report these errors to Technical Support."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 1213;
+MSG "%sConvert ASC to hex. Input char seq not ASC hex."; 
+File = "drivers/scsi/lpfc/core.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The ASCII hex input string contains a non-ASCII hex characters."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+}
+
+event_type 1214;
+MSG "%sConfiguration parameter out of range, using default value Data: %s"; 
+File = "drivers/scsi/lpfc/lpfcLINUXfcp.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The ASCII hex input string contains a non-ASCII hex characters."
+};
+Actions = {
+	"Make necessary changes to lpfc configuration file."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	string name;
+}
+
+event_type 1300;
+MSG "%sRe-establishing Link, timer expired Data: x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver detected a condition where it had to re-initialize the link."
+};
+Actions = {
+	"If numerous link events are occurring, check physical connections to Fibre Channel network."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 fc_flag;
+	u32 fc_ffstate;
+}
+
+event_type 1301;
+MSG "%sRe-establishing Link Data: x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver detected a condition where it had to re-initialize the link."
+};
+Actions = {
+	"If numerous link events are occurring, check physical connections to Fibre Channel network."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 status;
+	u32 status1;
+	u32 status2;
+}
+
+event_type 1303;
+MSG "%sLink Up Event x%x received Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"A link up event was received. It is also possible for multiple link events to be received together."
+};
+Actions = {
+	"If numerous link events are occurring, check physical connections to Fibre Channel network."
+};
+Threshold = 5;
+Interval = 60;
+attributes {
+	string prefix;
+	u32 Event;
+	u32 fc_eventTag;
+	u32 granted_AL_PA;
+	u32 UlnkSpeed;
+	u32 alpa_map;
+}
+
+event_type 1304;
+MSG "%sLink Up Event ALPA map Data: x%x x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"A link up event was received."
+};
+Actions = {
+	"If numerous link events are occurring, check physical connections to Fibre Channel network."
+};
+Threshold = 5;
+Interval = 60;
+attributes {
+	string prefix;
+	u32 wd1;
+	u32 wd2;
+	u32 wd3;
+	u32 wd4;
+}
+
+event_type 1305;
+MSG "%sLink Down Event x%x received Data: x%x x%x x%x"; 
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"A link down event was received."
+};
+Actions = {
+	"If numerous link events are occurring, check physical connections to Fibre Channel network."
+};
+Threshold = 5;
+Interval = 60;
+attributes {
+	string prefix;
+	u32 Event;
+	u32 fc_eventTag;
+	u32 hba_state;
+	u32 fc_flag;
+}
+
+event_type 1306;
+MSG "%sLink Down timeout Data: x%x x%x x%x";
+File = "drivers/scsi/lpfc/core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The link was down for greater than the configuration parameter (lpfc_linkdown_tmo) seconds. All I/O associated with the devices on this link will be failed."
+};
+Actions = {
+	"Check HBA cable/connection to Fibre Channel network."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 hba_state;
+	u32 fc_flag;
+	u32 fc_ns_retry;
+}
+
+event_type 1307;
+MSG "%sREAD_LA mbox error x%x state x%x";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The driver cannot determine what type of link event occurred."
+};
+Actions = {
+	"If numerous link events are occurring, check physical connections to Fibre Channel network. Could indicate possible hardware or firmware problem."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	u32 error;
+	u32 state;
+}
+
+event_type 1604;
+MSG "%slpfc_ioctl:error Data: %d";
+File = "drivers/scsi/lpfc/lpfc_core.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"SCSI send request buffer size limited exceeded."
+};
+Actions = {
+	"Reduce application program's SCSI send request buffer size to < 320K bytes."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	string prefix;
+	int error_index;
+}

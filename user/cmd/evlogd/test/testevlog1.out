@@ -1,0 +1,12 @@
+size=18
+Test duplicate #1
+size=18
+Test duplicate #2
+size=18
+Test duplicate #3
+size=68
+Discarded 2 duplicate events, event_type = 0x7d1, facility = LOCAL0
+size=68
+Discarded 2 duplicate events, event_type = 0x7d2, facility = LOCAL0
+size=68
+Discarded 2 duplicate events, event_type = 0x7d3, facility = LOCAL0

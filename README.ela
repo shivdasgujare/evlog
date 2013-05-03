@@ -1,0 +1,293 @@
+This document explains how to effectively use the Error Log Analysis
+(ELA) feature in the evlog package.  When an event of interest occurs,
+the ELA system will execute a user-specified command to handle the event.
+The default command reports the probable cause of the event, suggests
+one or more corrective actions, and notifies one or more agents via CIM,
+SNMP, or diagServiceEvent.
+
+The typical steps in using the ELA feature are as follows:
+1. Create an ELA template for each event of interest.  This template
+specifies how the event should be handled.
+2. Compile the ELA templates and generate the corresponding ELA rules.
+3. Register the ELA rules.
+Once the rules are registered, the corresponding events will be handled
+as specified in the templates.
+
+1. ELA templates
+----------------
+
+An ELA template is an ordinary evlog template that defines certain
+special const attributes.  Here is an example of an ELA template:
+
+#include "ela.h"
+...
+facility "e1000";
+event_type "%s %s: No usable DMA configuration, aborting\n";
+const {
+        string eventName = "noDmaCfg";
+	string reportType = "SRC";
+	string servCode = "BF777F00";
+	string FRU_SRC_Priority = "H";`
+        string file = "drivers/net/e1000/e1000_main.c";
+        ElaClass class = HARDWARE;
+        ElaType type = PERM;
+        ElaStringList probableCauses = {
+		"Unable to enable DMA for either 32 or 64 bits"
+        };
+        ElaStringList actions = {
+                "Verify driver software level",
+                "Execute diagnostics",
+                "Replace adapter"
+        };
+        int threshold = 2;
+        string interval = "7d";
+	string forany = "bus_id,host"
+	string runcmd = "/usr/share/evlog/ela_hw_alert";
+}
+
+attributes {
+        string fmt;
+        int argsz;
+        string driver;
+	string bus_id;
+}
+format string "%fmt:printk%"
+END
+
+The ela_get_atts utility reads the compiled template, and consults the
+values of the following attributes in order to create the corresponding
+ELA rule: facility, event_type, eventName, reportType, servCode, 
+FRU_SRC_Priority, runcmd, threshold, interval, and forany.
+
+facility: The facility that logged the event.  Printk forwarding
+produces events with a facility of "kern".
+
+event_type: A string or integer that specifies the type of event.
+Must be unique within each facility.  If a string is specified, the
+event_type is computed as a checksum of the string.  For events produced
+by printk forwarding, the printk's format string is used.  For purposes
+of computing the checksum, the severity prefix (e.g., KERN_ERR = "<3>"),
+if any, is ignored.  So are trailing newlines.
+
+eventName: An arbitrary C identifier, used to form a label for this event
+in the rule file.  eventNames must be unique within a particular facility.
+
+reportType: A string that specifies the type of ela report (SRC, SRN, or MENU)
+
+servCode: A SRC or SRN or menugoal service code.
+
+FRU_SRC_Priority: A string that specifies the priority for the SRC report 
+(H or M). Note that it is only applicaple if reportType=SRC.
+
+runcmd: The pathname of event-handling command to be run.  The command
+is invoked with one arg, the decimal recid of the event.  Defaults to
+"/usr/share/evlog/ela_hw_alert", which creates an ela_report then signals
+CIM/SNMP agents that there is a new report created.
+
+threshold: If this attribute is omitted, or has the value 1, then the
+event-handling command is executed every time an event of this type is
+logged.  If threshold > 1, then the interval and forany attributes are
+consulted, as follows.
+
+interval: This is a string that specifies a time period.  The string
+contains an integer optionally followed by a letter.  The letter can be:
+- 's' for seconds (the default)
+- 'm' for minutes
+- 'h' for hours
+- 'd' for days
+The event-handling command will be executed only after the event has
+occurred <threshold> times in the specified interval.  In the above
+example,
+        int threshold = 2;
+        string interval = "7d";
+specifies that the event-handling command will be executed if the event
+occurs twice in the space of 7 days.  (I.e., it will be executed
+immediately after the second occurrence, and the counter will be reset
+to zero.)
+
+forany: This optional attribute further refines the threshold.  It is
+a string containing one or more comma-separated attribute names.
+For example,
+	int threshold = 10;
+	string interval = "24h";
+	forany="bus_id";
+specifies that the ELA system maintains a separate counter for each bus_id
+for this event.  To trigger the event-handling command, the event must
+occur at least 10 times for a particular bus_id in the space of 24 hours.
+E.g., if, in the space of 24 hours, there are 16 events of this type
+for the device with bus_id=x, and 6 events for the device with bus_id=y,
+event-handling will be triggered only once, for device x (after x's
+10th occurrence).  Without the forany attribute, the total of 22 events
+would trigger event-handling twice (after the 10th and 20th events).
+
+	forany="bus_id,host";
+specifies that the ELA system will maintain a separate counter for
+each bus_id on each host.  For example, if your system is maintaining
+a consolidated event log for hosts A and B, and the following counts
+are observed for the event in question (threshold=10) in the specified
+interval...
+	host	bus_id	count
+	A	x	7
+	A	y	8
+	B	x	4
+	B	y	10
+... then event-handling will be triggered only once, for bus_id y on
+host B.
+
+The following const attributes are also meaningful to ela_hw_alert,
+the default event-handling script: class, type, probableCauses, actions.
+The types of these attributes are defined in user/cmd/ela/templates/ela.h.
+
+class: HARDWARE, SOFTWARE, or UNKNOWN
+
+type: 
+	PERM -- There is no recovery from this condition -- typically a
+		hardware failure.
+	TEMP -- The condition was or could be recovered from.
+	CONFIG -- A driver or kernel configuration problem.  See the
+		specified actions list for a suggested configuration change.
+	PEND -- The loss of a device is imminent.
+	PERF -- Performance condition where the performance has degraded
+		below acceptable levels.
+	INFO -- The event is informational only.
+	UNKN -- Unknown cause.
+
+probableCauses: An array of strings, each describing a probable cause
+	for the indicated event.
+
+actions: An array of strings, each describing a remedial action.
+
+The directory user/cmd/ela/templates contains "proto-templates" for
+a variety of device drivers, plus Makefiles for creating ELA templates
+from these proto-templates.  See the README file in that directory,
+and the subdirectories' Makefiles, for more information.
+
+2. Create a rule file
+---------------------
+
+An ELA rule file contains rules in the following format:
+
+<rule_name> {
+	filter=<valid event log filter>
+	threshold=<number>
+	interval=<time_interval>
+	[forany=<attributes from template>]
+}
+
+You can create a rule file by hand, or you can run the ela_get_atts
+utility to generate the rules automatically from the compiled templates:
+
+/sbin/evltc -I<dir_containing_ela.h> <templates>.t
+cp *.to /var/templates/<facility>
+cd /var/templates/<facility>
+/sbin/ela_get_atts -f <facility> 2> /dev/null > /tmp/ela.rules
+
+3. Register the rules
+---------------------
+
+/sbin/ela_add -f ela.rules
+
+To verify that the rules are registered, run
+
+/sbin/ela_show_all
+
+What happens when an event is logged
+------------------------------------
+
+Upon meeting the condition specified in the rule (matching the event,
+and meeting the threshold in the indicated time interval), the ELA script
+specified in the template (defaults to /usr/share/evlog/ela_hw_alert)
+is invoked.
+
+The ela_hw_alert script, if invoked, obtains data from the event record, from
+the formatting
+template, and from lsvpd, and creates an ela_report.  It then 
+invokes commands (if not commented-out) to
+  1) write a message to console (passing ela_report id)
+  2) send a CIM notification (passing ela_report id)
+  3) send a diagELA report (passing ela_report id) (only for IBM pSeries)
+  4) generate an SNMP trap (passing ela_report id)
+  5) ...and whatever else is desired for hardware alerts...
+You can edit the ela_hw_alert script to alter this behavior.
+
+An example
+----------
+
+Under evlog/user/cmd/ela/test, take a look at the ela_test2.sh script.
+
+In this test, we simulate events that come from the e1000 ethernet driver.
+We also provide the templates for the simulated events: elatest2.t.
+
+The following are the steps that the ela_test2.sh script actually
+performs.  If you want, you can follow these steps to get an idea 
+how ELA works.
+
+a) Set up the "simulated" e1000 facility:
+-----------------------------------------
+
+/sbin/evlfacility -a e1000s
+
+b) Set up templates for e1000 events :
+--------------------------------------
+
+mkdir /var/evlog/templates/e1000s
+cp evlog-x.x.x/user/cmd/ela/test/elates2.t /var/evlog/templates/e1000s
+cp evlog-x.x.x/user/cmd/ela/test/ela.h /var/evlog/templates/e1000s
+cd /var/evlog/templates/e1000s
+/sbin/evltc -c elatest2.t
+
+c) Create the ELA rule file:
+----------------------------
+
+cd /var/evlog/templates/e1000s
+
+/sbin/ela_get_atts -f e1000s > /tmp/ela.rules
+
+The rule file (/tmp/ela.rules) should look similar to :
+
+e1000s_invalid_eeprom_cksum {
+ filter = 'facility="e1000s" && event_type=0xd591e94e'
+ threshold = 3
+ interval = 30s
+ forany = "dev_name"
+}
+
+This ela.rules file can be edited to change the threshold and the
+interval.
+
+d) Load rule file :
+-------------------
+
+/sbin/ela_add -f /tmp/ela.rules
+
+e) Display ELA rules registered in the system:
+----------------------------------------------
+
+/sbin/ela_show_all
+(This will show all the rules registered in the system.)
+
+/sbin/ela_show e1000s_invalid_eeprom_cksum
+(This will display only the specified rule.)
+
+f) Verify that ELA is working :
+-------------------------------
+
+As root, issue the command
+evlog-x.x.x/user/cmd/ela/test/log_evt_test1.sh
+
+Verify that an ela_report<recid>.datnn is created under
+/var/evlog/ela_report.
+
+
+It should look something like this:
+
+Date/Time: 12/18/03 10:45:25
+Menu Number: 1234
+Text: eth0 (e1000 0000:00:03.0) PROBE: The EEPROM Checksum Is Not Valid
+
+Check for the following:
+	Verify driver software level
+	Execute diagnostics
+	Replace adapter
+EndText
+Error Log Sequence Number: 44053

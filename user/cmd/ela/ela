@@ -1,0 +1,60 @@
+#!/bin/bash
+
+prefix=ela
+PATH="/sbin:$PATH"
+export PATH
+
+FACILITY=""
+EVENT_TYPE=""
+SEVERITY=""
+RUNCMD=""
+ELA_HW_ALERT=/usr/share/evlog/ela_hw_alert
+
+ELA_SCRIPTS_DIR=/usr/share/evlog
+. $ELA_SCRIPTS_DIR/ela_funcs
+
+recid=${1}
+
+#echo $recid > $OUTPUT
+
+
+#
+# begin_rec_get - Capture the event record with this recid and 
+# put it in our temporary storage - Subsequent get_* will work
+# of this temporary storage.
+# 
+begin_rec_get $prefix $recid
+
+#
+# get the runcmd from event record template
+#
+RUNCMD=$(get_event_non_std_att "$prefix" "$recid" "runcmd")
+
+#echo "$RUNCMD"
+#
+# If run command is empty then run the default ela_hw_alert
+#
+if [ -z "$RUNCMD" ]; then
+	$ELA_HW_ALERT $recid
+	end_rec_get $prefix $recid
+	exit 0
+fi
+
+#
+#
+# Verify that the runcmd script  exist and invoke the runcmd script.
+#
+
+if [ ! -f "$RUNCMD" ]; then
+	echo "Command not found."
+	end_rec_get $prefix $recid
+	exit 1
+fi
+$RUNCMD $recid
+
+#
+# end_rec_get - We are done with getting information in this rec
+# remove temporary storage
+#
+end_rec_get $prefix $recid
+

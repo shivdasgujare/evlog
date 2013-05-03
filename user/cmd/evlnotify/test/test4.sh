@@ -1,0 +1,25 @@
+#!/bin/bash
+# 
+# This test testing the security feature (access granted) of the evlnotify -
+#
+
+user="nobody"
+
+touch /var/evlog/action.allow
+echo $user > /var/evlog/action.allow
+
+/sbin/evlnotify --add "echo test4" --filter 'data = "test4-access granted"' --uid $user
+ret=$?
+
+if [ $ret -eq  "0" ]
+then
+	echo "test4	:PASSED"
+else
+	echo "test4	:FAILED"
+fi
+echo "-----------------"
+
+nfy_id=`/sbin/evlnotify --list | grep "test4" | awk -F ":" '{print $1}'`
+/sbin/evlnotify --delete $nfy_id
+
+rm /var/evlog/action.allow

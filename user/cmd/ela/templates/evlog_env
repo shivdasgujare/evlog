@@ -1,0 +1,4 @@
+EVLOG_TEMPLATES_DIR=$(DESTDIR)/var/lib/evlog/templates
+ELA_BIN_DIR=$(DESTDIR)/usr/sbin
+ELA_RULES_DIR=$(DESTDIR)/etc/evlog.d/ela
+

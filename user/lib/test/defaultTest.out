@@ -1,0 +1,20 @@
+event type 1001:
+defaultTest.c:: This event record has a message string, but no further data.
+
+event type 1002:
+defaultTest.c:: This event record has a message string plus 3 ints.
+00000000 0B 00 00 00 15 00 00 00  CE 07 00 00
+event type 1003:
+Hey!  Something happened at line xx of defaultTest.c:
+Basically the same data as for event type 1002,
+but formatted with a non-default template.
+11/21/1998
+event type 1004:
+defaultTest.c:: This event record has a message string, plus another string.
+00000000 54 68 69 73 20 69 73 20  74 68 65 20 6F 74 68 65
+00000010 72 20 73 74 72 69 6E 67  2E 00
+event type 1003:
+Hey!  Something happened at line xx of defaultTest.c:
+This is another instance of event type 1003,
+with a different message and different ints.
+9/30/2000

@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# This is the ela CIM provider daemon
+DAEMON=ela_daemon
+
+SIG_SEND=/sbin/ela_sig_send
+#
+# Use this if your daemon start as a service under /etc/init.d/
+# 
+PID=`ps -eaf | grep $DAEMON | grep -v grep | awk '{print $2}'`
+
+if [ -z $PID ] ; then
+	echo "$DAEMON is not running"
+	exit 1;
+fi
+
+RECID=$1
+IO_PF=$2
+
+$SIG_SEND -p ${PID} -r ${RECID} -f ${IO_PF}

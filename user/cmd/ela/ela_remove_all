@@ -1,0 +1,24 @@
+#!/bin/bash
+ela_ids=""
+EVLNOTIFY=/sbin/evlnotify
+
+uid=`id -u`
+if [ $uid != "0" ]; then
+	echo "ERROR: Only root is allowed to use the ela tools"
+	exit 1
+fi
+
+
+ela_ids=`$EVLNOTIFY -S | grep "^id=" | awk -F "=" '{print $2}'`
+
+#echo "Removing $ela_ids"
+
+if [ -z "$ela_ids" ]; then
+	echo "Nothing to remove."
+	exit 0
+fi
+
+for ela_id in $ela_ids; do
+	$EVLNOTIFY -d ${ela_id}
+done
+

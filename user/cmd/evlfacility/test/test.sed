@@ -1,0 +1,9 @@
+s/recid=\([^,]*\)/recid=xxxx/;
+s/pid=\([^,]*\)/pid=xxxx/;
+s/pgrp=\([^,]*\)/pgrp=xxxx/;
+s/uid=\([^,]*\)/uid=xxxx/;
+s/gid=\([^,]*\)/gid=xxxx/;
+s/time=\([^,]*\)/time=xxxx/;
+s/flags=\([^,]*\)/flags=xxxx/;
+s/thread=\([^,]*\)/thread=xxxx/;
+s/processor=\([^,]*\)/processor=xx/;

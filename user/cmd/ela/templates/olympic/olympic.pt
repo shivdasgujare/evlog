@@ -1,0 +1,658 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+/* facility "olympic"; */
+/* printk -> kern */
+facility "kern";
+defaultFile = "drivers/net/tokenring/olympic.c";
+
+event_type "IBM PCI tokenring card not responding.\n";
+eventName = "olyPciCardNoResp";
+reportType = "SRC";
+servCode = "BF770F00";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The token ring adapter did not respond to initialization commands."
+};
+Actions = {
+	"Replace adapter"
+};
+attributes {
+}
+
+event_type "tokenring card intialization failed. errorcode : %x\n";
+/* Note typo: intialization */
+eventName = "olyCardInitFail";
+reportType = "SRC";
+servCode = "BF770F01";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The olympic driver was unable to initialize the token ring card."
+};
+Actions = {
+	"Corrective action may be possible depending upon the error code.",
+	"Replace adapter."
+};
+attributes {
+	int error "%x";
+}
+
+event_type "IBM Cardbus tokenring card not responding.\n";
+eventName = "olyCardbusCardNoResp";
+reportType = "SRC";
+servCode = "BF770F02";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The Cardbus token ring adapter did not respond to "
+	"initialization commands."
+};
+Actions = {
+	"Insure that Cardbus adapter is properly inserted",
+	"Replace adapter"
+};
+attributes {
+}
+
+event_type "%s: Adapter Open time out or error.\n";
+eventName = "olyAdapterTO";
+reportType = "SRC";
+servCode = "BF770F00";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The device has taken too long too respond to an "
+	"initialization command"
+};
+Actions = {
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Retrying at different ring speed \n";
+eventName = "olyRetryDiffSpeed";
+Class = HARDWARE;
+Type = INFO;
+ProbableCauses = {
+	"The adapter was unable to join the ring and is retrying at a"
+	" different speed."
+};
+Actions = {
+	"None."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Tried to autosense ring speed with no monitors present\n";
+eventName = "olyAutosenseNoMon";
+reportType = "SRC";
+servCode = "BF770F03";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	/* Is this a cause or a result? */
+	"The token ring adapter was unable to join the ring."
+};
+Actions = {
+	"Specify a ring speed instead of automatically detecting ring speed",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Invalid LAA: %02x:%02x:%02x:%02x:%02x:%02x\n";
+eventName = "olyInvalidLaa";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The LAA (Locally Administered Address) is invalid."
+};
+Actions = {
+	"Specify a valid LAA for the adapter."
+};
+attributes {
+	string dev_name;
+	/*
+	 * uchar in the driver, but uint in the arg list and event record,
+	 * due to standard integer promotion.
+	 */
+	uint laa[6] "%02x" delimiter=":";
+}
+
+event_type "%s: Bad OPEN response: %x\n";
+eventName = "olyBadOpen";
+reportType = "SRC";
+servCode = "BF770F04";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The adapter open request failed with the specified error code."
+};
+Actions = {
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+	int error "%x";
+}
+
+event_type "%s: Not enough memory to allocate rx buffers. Adapter disabled\n";
+eventName = "olyNomemRxBuf";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The driver was unable to allocate memory to store receive buffers."
+};
+Actions = {
+	"Increase the driver's OLYMPIC_RX_RING_SIZE constant."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Not enough memory to copy packet to upper layers. \n";
+eventName = "olyNomemCopyUp";
+reportType = "SRC";
+servCode = "BF770800";
+FRU_SRC_Priority = "M";
+Class = SOFTWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver was unable to send a received packet to the upper "
+	"layer protocols because there is insufficient free memory"
+};
+Actions = {
+	"Adjust system memory usage to increase available memory",
+	"Increase system memory"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Hotswap adapter removal.\n";
+eventName = "olyHotswap";
+Class = HARDWARE;
+Type = INFO;
+ProbableCauses = {
+	"The adapter has been removed as part of a hot swap operation"
+};
+Actions = {
+	"None; status message only."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "Olympic: EISR Error, EISR=%08x\n";
+eventName = "olyEisr";
+reportType = "SRC";
+servCode = "BF770F05";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The specified hardware, PCI or parity error has occurred."
+};
+Actions = {
+	"Reset adapter",
+	"Replace adapter"
+};
+attributes {
+	int eisr "%x";
+}
+
+event_type "%s: Adapter Check Interrupt Raised, 8 bytes of information follow:\n";
+eventName = "olyAdapterCkInt";
+reportType = "SRC";
+servCode = "BF770F05";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;		/* TODO: Is this right? */
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Reset adapter",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Unexpected interrupt: %x\n";
+eventName = "olyUnexpInt";
+reportType = "SRC";
+servCode = "BF770F06";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The specified interrupt has occurred, but was not expected by "
+	"the driver"
+};
+Actions = {
+	"For occasional occurrences, no action required.",
+	"For excessive occurrences, reset or replace adapter."
+};
+attributes {
+	string dev_name;
+	int sisr "%x";
+}
+
+event_type "%s: SRB timed out.\n";
+eventName = "olySrbTO";
+reportType = "SRC";
+servCode = "BF770F06";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"A timeout occurred during device close processing."
+};
+Actions = {
+	"For occasional occurances, no action required.",
+	"For excessive occurances, reset or replace adapter."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Unrecognized srb command\n";
+eventName = "olyUnrecSrbCmd";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver sent a command to the device, but the command "
+	"was not recognized by the device.  This is most likely due "
+	"to a driver error, but may be a hardware error."
+};
+Actions = {
+	"Reload the driver.",
+	"Replace adapter."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Adapter must be open for this operation, doh!!\n";
+eventName = "olyMustBeOpen";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = SOFTWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver issued a command without first opening the adapter. "
+	"This is most likely due to a driver error, but may be a "
+	"hardware error."
+};
+Actions = {
+	"Reload the driver.",
+	"Replace adapter."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Receive Options Modified to %x,%x\n";
+eventName = "olyRecvOptsMod";
+Class = HARDWARE;
+Type = INFO;
+ProbableCauses = {
+	"The adapter receive options were modified as specified."
+};
+Actions = {
+	"No action, this is an informational message."
+};
+attributes {
+	string dev_name;
+	int olympic_copy_all_options "%x";
+	int olympic_receive_options "%x";
+}
+
+event_type "%s: Group/Functional address indicator bits not set correctly\n";
+eventName = "olyAddrIndicBits";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver issued a command to add a group address, but the "
+	"specified address's Group and Functional bits are in error. "
+	"This is most likely a driver error, but may be a hardware error."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Group address registers full\n";
+eventName = "olyGrpAddrRegFull";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver issued a command to add a group address, but the "
+	"group address registers are already full.  This is most likely a "
+	"driver error, but may be a hardware error."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+
+event_type "%s: Group Address already set.\n";
+eventName = "olyGrpAddrSet";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver issued a command to add a group address, but the "
+	"specified address is already set.  This is most likely a "
+	"driver error, but may be a hardware error."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+
+event_type "%s: Group address not found \n";
+eventName = "olyGrpAddrNotFound";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver issued a command to remove a group address, but the "
+	"specified address was not set.  This is most likely a "
+	"driver error, but may be a hardware error."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+
+event_type "%s: Unrecognized srb bh return value.\n";
+eventName = "olyUnrecSrbBh";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver issued a command to the adapter, and received a "
+	"return value it does not recognize.  This is most likely a driver "
+	"error, but may be a hardware error."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Cannot set mac/laa address while card is open\n";
+eventName = "olyCantSetAddrWhileOpen";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver attempted to alter the MAC/LAA address while the "
+	"device is running. This is most likely a user space error, but "
+	"may be a driver or hardware error."
+};
+Actions = {
+	"Insure that user space code stops device before changing MAC/LAA",
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Memory squeeze, dropping frame.\n";
+eventName = "olyNomemDrop";
+reportType = "SRC";
+servCode = "BF770800";
+FRU_SRC_Priority = "H";
+Class = SOFTWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver was unable to allocate memory to store a received "
+	"frame."
+};
+Actions = {
+	"Adjust system memory usage to increase available memory",
+	"Increase system memory"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Short circuit detected on the lobe\n";
+eventName = "olyShortCircuit";
+reportType = "SRC";
+servCode = "BF770F08";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"A short circuit has been detected."
+};
+Actions = {
+	"Check and/or replace cables",
+	"Check and/or replace peer stations on ring",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Auto removal error\n";
+eventName = "olyAutoRemoval";
+reportType = "SRC";
+servCode = "BF770F09";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"An internal hardware error has been detected in the specified "
+	"adapter during auto removal processing."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: FDX Protocol Error\n";
+eventName = "olyFdxProtocol";
+reportType = "SRC";
+servCode = "BF770F0A";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"An FDX protocol error has been detected."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Force remove MAC frame received\n";
+eventName = "olyForceRm";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"A Remove Ring Station MAC frame has been received by the adapter. "
+	"As a result, the adapter has been removed from the ring and closed."
+};
+Actions = {
+	"Reload driver",
+	"Examine other stations on ring to determine sender and cause."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Adapter has been closed \n";
+eventName = "olyAdapterClosed";
+Class = HARDWARE;
+Type = INFO;
+ProbableCauses = {
+	"This is a supplemental message indicating that the driver has "
+	"closed the adapter following a fatal error."
+};
+Actions = {
+	"None."
+};
+attributes {
+	string dev_name;
+}
+
+event_type "%s: Unknown arb command \n";
+eventName = "olyUnkArbCmd";
+reportType = "SRC";
+servCode = "BF770F07";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The driver has received an unknown command from the adapter."
+};
+Actions = {
+	"Reload driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}
+
+
+event_type "%s: Unrecognized command code \n";
+eventName = "olyUnrecCmd";
+reportType = "SRC";
+servCode = "BF770A00";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PEND;
+ProbableCauses = {
+	"The driver provided an incorrect command code to the adapter. "
+	"This error results in the loss of an adapter receive buffer, and "
+	"is most likely a driver error."
+};
+Actions = {
+	"Reload driver and reset device to recover lost buffers",
+	"Upgrade driver"
+};
+attributes {
+	string dev_name;
+}
+
+
+event_type "%s: Unrecognized buffer address \n";
+eventName = "olyUnrecBufAddr";
+reportType = "SRC";
+servCode = "BF770A00";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PEND;
+ProbableCauses = {
+	"The driver supplied a receive buffer address that the adapter "
+	"did not recognize.  This error results in the loss of an adapter "
+	"receive buffer, and is most likely a driver error."
+};
+Actions = {
+	"Reload driver and reset device to recover lost buffers",
+	"Upgrade driver"
+};
+attributes {
+	string dev_name;
+}
+
+
+event_type "%s: Invalid return code in asb\n";
+eventName = "olyAsbRetCode";
+reportType = "SRC";
+servCode = "BF770F0B";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"The adapter supplied an invalid return code to an adapter command "
+	"response.  This is most likely an error with the adapter itself, "
+	"but could be a driver error."
+};
+Actions = {
+	"Upgrade driver",
+	"Replace adapter"
+};
+attributes {
+	string dev_name;
+}

@@ -1,0 +1,127 @@
+%{
+/*
+ * Copyright (C) 2001 IBM
+ */
+
+#ident "$Header: /cvsroot/evlog/evlog/user/lib/query/lex,v 1.3 2002/03/11 18:59:55 kenistoj Exp $"
+
+/* 
+ * lex
+ * Tokenizer for POSIX query expressions
+ * Based on the EES filter expression tokenizer
+ */
+
+#include <stdlib.h>
+#include <string.h>
+
+#include "evl_parse.h"
+#include "q.tab.h"
+#include "scanner.h"
+
+extern int lexerr;
+static void lxUnput(int c);
+static int lineNumber = 0;
+%}
+%option noyywrap
+%%
+
+[=\>\<\&\~]	{qqlval.ival = (int)(yytext[yyleng - 1]);	
+			return OP; }
+contains	{qqlval.ival = CONTAINS; return OP;}
+\!	{return '!';}
+==	{qqlval.ival = '='; return OP;}
+\!\=	{qqlval.ival = NE; return OP;}
+\>\=	{qqlval.ival = GE; return OP;}
+\<\=	{qqlval.ival = LE; return OP;}
+\!\~	{qqlval.ival = RENOMATCH; return OP;}
+
+\|\|	{return OR;}
+\&\&	{return AND;}
+
+0[xX][0-9A-Fa-f]+ {
+	/* hex */
+	qqlval.ival = strtoul((char *)yytext, (char **)NULL, 16);
+	return INTEGER;
+	}
+0[0-7]*	{
+	/* octal */
+	qqlval.ival = strtoul((char *)yytext, (char **)NULL, 8);
+	return INTEGER;
+	}
+[1-9][0-9]*	{
+	/* decimal */
+	qqlval.ival = strtoul((char *)yytext, (char **)NULL, 10);
+	return INTEGER;
+	}
+[_A-Za-z][A-Za-z0-9_]* {
+	char * thisName;
+	if (! (thisName = strdup((const char*)yytext)) ) {
+		perror("strdup");
+		return(ERRTOK);
+	}
+	qqlval.sval = thisName;
+	return NAME;
+	}
+
+"\""	{
+	char *s = lxGetString(1, input, lxUnput, &lineNumber);
+	if (!s) {
+		return ERRTOK;
+	}
+	qqlval.sval = s;
+	return (STRING);
+	}
+
+[ \t]	;
+
+.	{
+	/* Pass through any other characters. */
+	return (int) yytext[0];
+	}
+
+%%
+
+/* Define lxUnput for use by the functions in scanner.c. */
+static void lxUnput(int c) { unput(c); }
+
+#ifdef __linux__
+/* Use flex's yy_scan_string(). */
+static YY_BUFFER_STATE bufState;
+
+void
+_evlQReinitLex(const char *queryString)
+{
+	/* Include a null character at the end. */
+	bufState = yy_scan_bytes(queryString, strlen(queryString)+1);
+}
+
+void
+_evlQEndLex()
+{
+	yy_delete_buffer(bufState);
+}
+#else	/* not __linux__ */
+/**Added _evlQReinitLex() function for ees_parser*/
+/*This function reinitializes all the lex global variables.
+This is called before every yyparse() call so that lex doesn't
+retain any state from the previous call to yyparse()
+*/
+void
+_evlQReinitLex()
+{
+	extern int yyprevious;
+
+	/* yyleng=yymorfg=yytchar=yyindex=lexerr=0; */
+	yyleng=yytchar=yyindex=lexerr=0;
+	(void) memset(yytext, 0, YYLMAX);
+	(void) memset(yysbuf, 0, YYLMAX);
+	yysptr=yysbuf;
+	yyprevious=10; /* From :
+			* #define YYNEWLINE 10
+			* yyprevious = YYNEWLINE
+			*/
+	/*yylineno is not reset intentionally so that it can be used to
+	 *indicate the line number when reporting an error.
+	 */
+}
+#endif	/* not __linux__ */

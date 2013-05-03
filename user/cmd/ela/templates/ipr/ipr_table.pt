@@ -1,0 +1,1471 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+/* 00000000 */
+event_type "8155: An unknown error was received";
+eventName = "ipr8155";
+reportType = "SRC";
+servCode = "BF751800";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = UNKNOWN;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Update device driver"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01080000, 0xFFFE, 0x8140, "Statistical",1 */
+event_type "FFFE: Soft device bus error recovered by the IOA";
+eventName = "iprFFFE";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Soft device bus error"
+};
+Actions = {
+	"Perform MAP 3350 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 10;
+Interval = "168H";
+attributes {
+}
+
+/* 0x01170600, 0xFFF9, 0x8141, "Temporary", 1, */
+event_type "FFF9: Device sector reassign successful";
+eventName = "iprFFF9sectorReassignSuccess";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Media Error"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01170900, 0xFFF7, 0x8141, "Temporary", 1, */
+event_type "FFF7: Media error recovered by device rewrite procedures";
+eventName = "iprFFF7mediaErrorRecovDevRewrite";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Media error"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01180200, 0x7001, 0x8141, "Statistical", 1, */
+event_type "7001: IOA sector reassignment successful";
+eventName = "ipr7001";
+reportType = "SRC";
+servCode = "BF751D00";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Media Error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01180500, 0xFFF9, 0x8141, "Statistical", 1, */
+event_type "FFF9: Soft media error. Sector reassignment recommended";
+eventName = "iprFFF9sectorReassignRecommend";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Media error"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01180600, 0xFFF7, 0x8141, "Temporary", 1, */
+event_type "FFF7: Media error recovered by IOA rewrite procedures";
+eventName = "iprFFF7mediaErrorRecovIoaRewrite";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Media error"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01418000, 0x0000, 0xFF3D, "Statistical", 1, */
+event_type "FF3D: Soft PCI bus error recovered by the IOA";
+eventName = "iprFF3DsoftPciError";
+reportType = "SRC";
+servCode = "BF751F08";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Soft PCI bus error"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 10;
+Interval = "168H";
+attributes {
+}
+
+/* 0x01430000, 0x0000, 0x0000, "None", 1, */
+event_type "Unsolicited device bus message received";
+eventName = "iprUnsolDevBusMsg";
+reportType = "SRC";
+servCode = "BF751D01";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Unsolicited device bus message"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 10;
+Interval = "168H";
+attributes {
+}
+
+/* 0x01440000, 0xFFF6, 0x8141, "Statistical", 1, */
+event_type "FFF6: Device hardware error recovered by the IOA";
+eventName = "iprFFF6errorRecoveredByIoa";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Device hardware error"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01448100, 0xFFF6, 0x8141, "Statistical", 1, */
+event_type "FFF6: Device hardware error recovered by the device";
+eventName = "iprFFF6errorRecoveredByDev";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Device hardware error"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x01448200, 0x0000, 0xFF3D, "Statistical", 1, */
+event_type "FF3D: Soft IOA error recovered by the IOA";
+eventName = "iprFF3DsoftIoaError";
+reportType = "SRC";
+servCode = "BF751F09";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Adapter hardware error"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 10;
+Interval = "168H";
+attributes {
+}
+
+/* 0x01448300, 0xFFFA, 0x8141, "Statistical", 1, */
+event_type "FFFA: Undefined device response recovered by the IOA";
+eventName = "iprFFFA";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Device hardware error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 10;
+Interval = "168H";
+attributes {
+}
+
+/* 0x014A0000, 0xFFF6, 0x8141, "Statistical", 1, */
+event_type "FFF6: Device bus error, message or command phase";
+eventName = "iprFFF6devBusError";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Device bus error"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x015D0000, 0xFFF6, 0x8145, "Threshold", 1, */
+event_type "FFF6: Failure prediction threshold exceeded";
+eventName = "iprFFF6failPredictThresh";
+reportType = "SRC";
+servCode = "BF751D03";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Predictive failure analysis"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x015D9200, 0x0000, 0x8009, "Threshold", 1, */
+event_type "8009: Impending cache battery pack failure";
+eventName = "ipr8009";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Cache battery pack"
+};
+Actions = {
+	"Perform MAP 3300 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x02670100, 0x3020, 0x3400, "Permanent", 1, */
+event_type "3020: Storage subsystem configuration error";
+eventName = "ipr3020storageCfgError";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Storage subsystem configuration error"
+};
+Actions = {
+	"Perform MAP 3350 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x03110C00, 0x0000, 0x0000, "Permanent", 1, 0x7000, 0x3400 */
+event_type "7000: Medium error, data unreadable, do not reassign";
+eventName = "ipr7000";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x03310000, 0xFFF3, 0x3400, "Permanent", 1, */
+event_type "FFF3: Disk media format bad";
+eventName = "iprFFF3";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3335 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04050000, 0x3002, 0x3400, "Recoverable", 0, */
+event_type "3002: Addressed device failed to respond to selection";
+eventName = "ipr3002";
+reportType = "SRC";
+servCode = "BF751D04";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Device error",
+	"May occur normally during concurrent maintenance"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04080000, 0x3100, 0x3100, "Permanent", 1, */
+event_type "3100: Device bus error";
+eventName = "ipr3100";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device bus error"
+};
+Actions = {
+	"Perform MAP 3350 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04080100, 0x3109, 0x3400, "Recoverable", 1, */
+event_type "3109: IOA timed out a device command";
+eventName = "ipr3109";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Device error",
+	"May occur normally during concurrent maintenance"
+};
+Actions = {
+	"Perform MAP 3350 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04118000, 0x0000, 0x9000, "Permanent", 1, */
+event_type "9000: IOA reserved area data check";
+eventName = "ipr9000";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04118100, 0x0000, 0x9001, "Permanent", 1, */
+event_type "9001: IOA reserved area invalid data pattern";
+eventName = "ipr9001";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3370 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04118200, 0x0000, 0x9002, "Permanent", 1, */
+event_type "9002: IOA reserved area LRC error";
+eventName = "ipr9002";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04320000, 0x102E, 0x3400, "Permanent", 1, */
+event_type "102E: Out of alternate sectors for disk storage";
+eventName = "ipr102E";
+reportType = "SRC";
+servCode = "BF751D05";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Out of alternate sectors for disk storage"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04330000, 0xFFF4, 0x3400, "Permanent", 1, */
+event_type "FFF4: Data transfer underlength error";
+eventName = "iprFFF4dataXferUnder";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04338000, 0xFFF4, 0x3400, "Permanent", 1, */
+event_type "FFF4: Data transfer overlength error";
+eventName = "iprFFF4dataXferOver";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x043E0100, 0x0000, 0x3400, "Permanent", 1, */
+event_type "3400: Logical unit failure";
+eventName = "ipr3400";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04408500, 0xFFF4, 0x3400, "Permanent", 1, */
+event_type "FFF4: Device microcode is corrupt";
+eventName = "iprFFF4";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04430000, 0x0000, 0x0000, "None", 0, */
+event_type "Unsupported device bus message received";
+eventName = "iprUnsupDevBusMsg";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04418000, 0x0000, 0x8150, "Permanent", 1, */
+event_type "8150: PCI bus error";
+eventName = "ipr8150pciBusError";
+reportType = "SRC";
+servCode = "BF751F08";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"PCI bus error"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 2;
+Interval = "24H";
+attributes {
+}
+
+/* 0x04440000, 0xFFF4, 0x3400, "Permanent", 1, */
+event_type "FFF4: Disk device problem";
+eventName = "iprFFF4disk";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04448200, 0x0000, 0x8150, "Permanent", 1, */
+event_type "8150: Permanent IOA failure";
+eventName = "ipr8150permIoaFail";
+reportType = "SRC";
+servCode = "BF751F09";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter error"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04448300, 0x3010, 0x3400, "Permanent", 1, */
+event_type "3010: Disk device returned wrong response to IOA";
+eventName = "ipr3010";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04448400, 0x0000, 0x8151, "Permanent", 1, */
+event_type "8151: IOA microcode error";
+eventName = "ipr8151";
+reportType = "SRC";
+servCode = "BF751A06";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Microcode error"
+};
+Actions = {
+	"Update adapter microcode and/or device driver"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04448600, 0x0000, 0x8157, "Permanent", 1, */
+event_type "8157: IOA error requiring IOA reset to recover";
+eventName = "ipr8157";
+reportType = "SRC";
+servCode = "BF751F09";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Adapter error"
+};
+Actions = {
+	"Replace adapter"
+};
+Threshold = 2;
+Interval = "24H";
+attributes {
+}
+
+/* 0x04449200, 0x0000, 0x8008, "Permanent", 1, */
+event_type "8008: A permanent cache battery pack failure occurred";
+eventName = "ipr8008";
+reportType = "SRC";
+servCode = "BF751D0B";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Cache battery pack failure"
+};
+Actions = {
+	"Perform MAP 3300 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x0444A000, 0x0000, 0x9090, "Permanent", 1, */
+event_type "9090: Disk unit has been modified after the last known status";
+eventName = "ipr9090";
+reportType = "SRC";
+servCode = "BF751D0A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3333 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x0444A200, 0x0000, 0x9081, "Permanent", 1, */
+event_type "9081: IOA detected device error";
+eventName = "ipr9081";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x0444A300, 0x0000, 0x9082, "Permanent", 1, */
+event_type "9082: IOA detected device error";
+eventName = "ipr9082";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x044A0000, 0x3110, 0x3400, "Permanent", 1, */
+event_type "3110: Device bus error, message or command phase";
+eventName = "ipr3110";
+reportType = "SRC";
+servCode = "BF751D08";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3350 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x04670400, 0x0000, 0x9091, "Permanent", 1, */
+event_type "9091: Incorrect hardware configuration change has been detected";
+eventName = "ipr9091";
+reportType = "SRC";
+servCode = "BF751D0A";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3333 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x046E0000, 0xFFF4, 0x3400, "Permanent", 1, */
+event_type "FFF4: Command to logical unit failed";
+eventName = "iprFFF4cmdToLun";
+reportType = "SRC";
+servCode = "BF751D02";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Device error"
+};
+Actions = {
+	"Replace device"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06040500, 0x0000, 0x9031, "Temporary", 1, */
+event_type "9031: Array protection temporarily suspended, protection resuming";
+eventName = "ipr9031";
+reportType = "SRC";
+servCode = "BF751D06";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3310 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06040600, 0x0000, 0x9040, "Temporary", 1, */
+event_type "9040: Array protection temporarily suspended, protection resuming";
+eventName = "ipr9040";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06290000, 0xFFFB, 0x3400, "Informational", 1, */
+event_type "FFFB: SCSI bus was reset";
+eventName = "iprFFFBbusReset";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06298000, 0xFFFB, 0x3400, "Informational", 1, */
+event_type "FFFB: SCSI bus was reset by another initiator";
+eventName = "iprFFFBbusResetByOther";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x063F0300, 0x3029, 0x3400, "Informational", 1, */
+event_type "3029: A device replacement has occurred";
+eventName = "ipr3029";
+reportType = "MENU";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = UNKN;
+ProbableCauses = {
+	"Inquiry data has changed"
+};
+Actions = {
+	"None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x064C8000, 0x0000, 0x9051, "Permanent", 1, */
+event_type "9051: IOA cache data exists for a missing or failed device";
+eventName = "ipr9051";
+reportType = "SRC";
+servCode = "BF751D09";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3332 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06670100, 0x0000, 0x9025, "Permanent", 1, */
+event_type "9025: Disk unit is not supported at its physical location";
+eventName = "ipr9025";
+reportType = "SRC";
+servCode = "BF751D06";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3310 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06670600, 0x0000, 0x3020, "Permanent", 1, */
+event_type "3020: IOA detected a SCSI bus configuration error";
+eventName = "ipr3020busCfgError";
+reportType = "SRC";
+servCode = "BF751D08";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3350 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06678000, 0x0000, 0x3150, "Permanent", 1, */
+event_type "3150: SCSI bus configuration error";
+eventName = "ipr3150busCfgError";
+reportType = "SRC";
+servCode = "BF751D08";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3350 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x06690200, 0x0000, 0x9041, "Temporary", 1, */
+event_type "9041: Array protection temporarily suspended";
+eventName = "ipr9041";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x066B0200, 0x0000, 0x9030, "Permanent", 1, */
+event_type "9030: Array no longer protected due to missing or failed disk unit";
+eventName = "ipr9030";
+reportType = "SRC";
+servCode = "BF751D06";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3310 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278000, 0x0000, 0x9008, "Permanent", 1, */
+event_type "9008: IOA does not support functions expected by devices";
+eventName = "ipr9008";
+reportType = "SRC";
+servCode = "BF751D0B";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3330 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278100, 0x0000, 0x9010, "Permanent", 1, */
+event_type "9010: Cache data associated with attached devices cannot be found";
+eventName = "ipr9010";
+reportType = "SRC";
+servCode = "BF751D0C";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3320 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278200, 0x0000, 0x9011, "Permanent", 1, */
+event_type "9011: Cache data belongs to devices other than those attached";
+eventName = "ipr9011";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278400, 0x0000, 0x9020, "Permanent", 1, */
+event_type "9020: Array missing 2 or more devices with only 1 device present";
+eventName = "ipr9020";
+reportType = "SRC";
+servCode = "BF751D0D";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3311 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278500, 0x0000, 0x9021, "Permanent", 1, */
+event_type "9021: Array missing 2 or more devices with 2 ormore devices present";
+eventName = "ipr9021";
+reportType = "SRC";
+servCode = "BF751D0D";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3311 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278600, 0x0000, 0x9022, "Permanent", 1, */
+event_type "9022: Exposed array is missing a required device";
+eventName = "ipr9022";
+reportType = "SRC";
+servCode = "BF751D0D";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3311 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278700, 0x0000, 0x9023, "Permanent", 1, */
+event_type "9023: Array member(s) not at required physical locations";
+eventName = "ipr9023";
+reportType = "SRC";
+servCode = "BF751D0E";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3312 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278800, 0x0000, 0x9024, "Permanent", 1, */
+event_type "9024: Array not functional due to present hardware configuration";
+eventName = "ipr9024";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278900, 0x0000, 0x9026, "Permanent", 1, */
+event_type "9026: Array not functional due to present hardware configuration";
+eventName = "ipr9026";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278A00, 0x0000, 0x9027, "Permanent", 1, */
+event_type "9027: Array is missing a device and parity is out of sync";
+eventName = "ipr9027";
+reportType = "SRC";
+servCode = "BF751D0F";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3313 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278B00, 0x0000, 0x9028, "Permanent", 1, */
+event_type "9028: Maximum number of arrays already exist";
+eventName = "ipr9028";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278C00, 0x0000, 0x9050, "Permanent", 1, */
+event_type "9050: Required cache data cannot be located for a disk unit";
+eventName = "ipr9050";
+reportType = "SRC";
+servCode = "BF751D10";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3331 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278D00, 0x0000, 0x9052, "Permanent", 1, */
+event_type "9052: Cache data exists for a device that has been modified";
+eventName = "ipr9052";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07278F00, 0x0000, 0x9054, "Permanent", 1, */
+event_type "9054: IOA resources not available due to previous problems";
+eventName = "ipr9054";
+reportType = "SRC";
+servCode = "BF751D11";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3321 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07279100, 0x0000, 0x9092, "Permanent", 1, */
+event_type "9092: Disk unit requires initialization before use";
+eventName = "ipr9092";
+reportType = "SRC";
+servCode = "BF751D12";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3334 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07279200, 0x0000, 0x9029, "Permanent", 1, */
+event_type "9029: Incorrect hardware configuration change has been detected";
+eventName = "ipr9029";
+reportType = "SRC";
+servCode = "BF751D07";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"Unknown"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07279600, 0x0000, 0x9060, "Permanent", 1, */
+event_type "9060: One or more disk pairs are missing from an array";
+eventName = "ipr9060";
+reportType = "SRC";
+servCode = "BF751D0D";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3311 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07279700, 0x0000, 0x9061, "Permanent", 1, */
+event_type "9061: One or more disks are missing from an array";
+eventName = "ipr9061";
+reportType = "SRC";
+servCode = "BF751D0D";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3311 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07279800, 0x0000, 0x9062, "Permanent", 1, */
+event_type "9062: One or more disks are missing from an array";
+eventName = "ipr9062";
+reportType = "SRC";
+servCode = "BF751D0D";
+FRU_SRC_Priority = "H";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3311 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 0x07279900, 0x0000, 0x9063, "Permanent", 1, */
+event_type "9063: Maximum number of functional arrays has been exceeded";
+eventName = "ipr9063";
+reportType = "SRC";
+servCode = "BF751D07";
+File = "drivers/scsi/ipr.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Hardware configuration error"
+};
+Actions = {
+	"Perform MAP 3390 in the PCI-X SCSI RAID Controller Reference Guide for Linux"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}

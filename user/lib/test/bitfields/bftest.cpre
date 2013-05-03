@@ -1,0 +1,49 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <wchar.h>
+
+#include <posix_evlog.h>
+#include <evlog.h>
+
+#define ARRAY_FMT
+#define STRARRAY_FMT
+
+typedef unsigned char uchar;
+typedef signed char schar;
+typedef unsigned long long ulonglong;
+typedef long long longlong;
+typedef wchar_t wchar;
+
+typedef int xint;
+typedef uint uxint;
+
+enum e { sun, mon, tue, wed, thu, fri, sat };
+struct b1 {
+	char c;
+};
+struct b2 {
+	char c1:4;
+	char c2:4;
+};
+
+int exitStatus = 0;
+
+static void
+checkStatus(int status, int evty)
+{
+	if (status != 0) {
+		fprintf(stderr, "write of event type %d failed:\n", evty);
+		errno = status;
+		perror("posix_log_write:");
+		exitStatus = 1;
+	}
+}
+
+main()
+{
+	posix_log_facility_t facility = 8;
+	int event_type;
+	posix_log_severity_t severity = LOG_DEBUG;
+	int status;
+

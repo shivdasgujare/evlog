@@ -1,0 +1,19 @@
+#define ARRAY_FMT "(%d,)"
+#define STRARRAY_FMT "(%Z,)"
+typedef int xint;
+typedef uint uxint;
+
+struct b1;
+aligned attributes {
+	char c;
+}
+format string "{%c%}"
+END
+
+struct b2;
+aligned attributes {
+	char c1:4;
+	char c2:4;
+}
+format string "{%c1%,%c2%}"
+END

@@ -1,0 +1,437 @@
+Enterprise-Class Event Logging for Linux
+========================================
+
+v1.0.0   9/20/2001
+Initial  Version
+
+
+v1.0.1  10/01/2001
+- Replaced calls to spin_lock_irq() and spin_unlock_irq() with calls
+  to  spin_lock_irqsave() and spin_unlock_irqrestore() in kernel log
+  write functions.  This resolved a hang condition experienced with 
+  a SCSI device driver.
+- Replaced use of sockaddr to sockaddr_un to provide longer socket 
+  path name.
+- Several minor changes needed for s390 (32 and 64 bit).
+- runtests.sh scripts modifed to take option of s390 (32-bit) or
+  s390x (64-bit) to specify s390/IBM Z-Series.
+- Processing of white-spaces was fixed to correctly process >1 white 
+  space.
+NOTE:  The patch for GNU C Library, evlog-1.0.1_glibc2.2.3.patch,
+is unchanged from version 1.0.0.
+
+
+v1.1.0  11/09/2001
+
+New features and enhancements in v1.1.0
+    
+1. Kernel patches for kernel versions 2.4.2 through 2.4.14 will 
+   now be posted on the website.  
+2. A new library that "wraps" around GNU C Lib and provides
+   forwarding of syslog messages to the POSIX event log without
+   having to patch and rebuild glibc.
+3. Formatting Template support and evltc command (for compiling
+   formatting template). Some features are not yet available
+   (section numbers in the spec are indicated):
+* (6.1.2.2.1.2: Imports and Typedefs) If an import statement specifies
+   a struct that has already been created or imported, the import
+   statement will be silently ignored.
+* (6.1.2.2.1.4: Attributes Section [overall format]) The issue regarding
+   const-only structs is still unresolved.  It is currently impossible 
+   to define a struct that has only const attributes.
+* (6.1.2.2.1.4.3: Attribute Dimension or Bit-Field Width) Bit fields 
+   and arrays of structs are not yet supported.
+* (6.1.2.2.1.4.5 Attribute Format)   The following is not yet supported:
+* Validation of printf-style formats is incomplete.  In particular, you
+  are permitted to specify formats that are completely inappropriate for
+  the given data type -- e.g. "%f" for a string.
+* The %t (dump) format is currently supported only for arrays.
+* %b (bitmap) and %v (named-value) specifiers are not yet supported
+  for arrays.
+* As previously mentioned, arrays of structs are not yet supported;
+  so the %Z format specifier is not, either.
+* (6.2.3.3 Formatting Templates [API]) The following is not supported:
+   * The evl_populatetemplate() function does not currently create the 
+     _EXTRA_DATA_ pseudo-attribute
+   * The evltemplate_getatt() function does not currently handle names 
+     such as "x.y" to reference members of struct-type attributes.
+
+4. Displaying of events logged in the kernel (with the new log write
+   functions) on the system console.  The --output option was added to 
+   the evlconfig command to turn console logging on/off, or set the
+   severity level for displaying to the console.
+5. Forwarding of printk() messages to the kernel event buffer must now
+   be explicitly enabled when configuring the kernel (forwarding is
+   disabled by default).
+6. evlfacility command for managing the facility registry.
+7. Restricted Logging support. 
+8. Added "address" as a data type for formatting templates.
+9. Added 2 new purpose arguments for posix_log_query_create() as
+   extensions to the draft POSIX standard:  EVL_PRPS_TEMPLATE and
+   EVL_PRPS_RESTRICTED.
+10. Added EVL_KERNEL_EVENT flag for log_flags member in 
+    posix_log_entry.
+11. Added varargs versions of log write functions in kernel and 
+    user-space.
+12. Added support for --new and --timeout options in evlview
+    command.
+13. Added --templates and --notemplates options to evlview command.
+14. Added unlink(PidFile) function in evlogd.c, evlnotifyd.c,
+    evlactiond.c.
+15. Moved evlogd, evlnotifyd, and evlactiond pid files from /var/evlog
+    to /var/run.
+
+Bug Fixes in v1.1.0
+
+1. Removed evlog *.pid files on graceful shutdown or on startup if 
+   previous shutdown was non-graceful to fix evlogd daemon startup
+   failure.
+2. In event notification, fixed a bug where error returns from
+   rt_sigqueueinfo() were causing the notification to be erroneously
+   disabled.
+3. In do_syslog(), now use options 20 and 21 for read/write to kernel
+   event buffer, instead of 9 and 10, to avoid conflict with other
+   newly added options in do_syslog(). 
+4. posix_log_notify_add() is now signal-safe.
+
+
+v1.1.1  11/28/2001
+
+Bug fixes in v1.1.1
+
+1. (Fix for Bug # 485676) Code added in v1.1.0 for displaying events on the
+   system console is incompatible with the re-write of code for displaying of
+   messages from printk() first appearing in kernel v2.4.10. This causes the
+   kernel to hang or PANIC under certain conditions.  This only affects the
+   patches for kernel versions 2.4.10 through 2.4.14. 
+2. Added check in the kernel version of posix_log_write() for null-terminated
+   string (when log_format is POSIX_LOG_STRING).  Returns EBADMSG if string
+   is not null-terminated.  A few other changes to make this function   
+   consistent between kernel and user space.
+3. Fixed bug causing programs linked with libevl.so to fail at link time.
+4. Added missing function call in libevlsyslog.so so that syslog messages
+   actually get logged in event log.
+5. Fixed several bugs causing problems on s390 and/or 64-bit machines:
+   * evltc command reporting bogus errors or causing segfaults
+   * Backward seeks through the event log (as used by evlview --tail) failed. 
+   * Various memory corruption problems 
+6. Updated all header files for C++ compatability.
+
+
+v1.2.0  02/18/2002
+
+New Features and Enhancements in v1.2.0
+
+1. Events logged in user-space are now passed directly to the evlogd 
+   daemon,  instead of being written to the kernel event buffer.
+2. The libevl event logging library no longer depends on the event 
+   logging kernel patch, meaning that event logging in user-space 	
+   does not require  changes in the kernel.  The kernel patch is 
+   still required for using the event logging APIs in the kernel and 
+   for forwarding of printk() messages to Enterprise Event Logging.
+3. All formatting template features described in the Enterprise Event 
+   Logging Specification are now available.  
+4. Date and Time formatting in the evlview command is now based on 
+   the setting of the LANG environment variable.
+5. Removed the --value option from the evlfacility command, in 
+   preparation for future enhancements to the way log_facility 
+   integer values are generated from Facility names (text strings).  
+6. Kernel patches covering all 2.4 Linux kernels from 2.4.2 to 2.4.17 
+   are now provided.
+ 
+Bug Fixes in v1.2.0:
+
+   492551   %c can yield null char in output
+   492610   Kernel events during boot w/ wrong time
+
+
+v1.3.0  03/11/02
+
+New Features and Enhancements in v1.3.0
+
+1. Improved Facility code generation and registration: 
+    * Generation of Facility Code (integer) value from Facility 
+      Name is now based on a 32-bit CRC algorithm to ensure 
+      consistent facility codes across multiple machines. 
+    * New functions are provided in both kernel and user-space 
+      for registering Facilities, and obtaining Facility codes.
+2. Several enhancements related to formatting templates:
+    * Formatting templates are now valid with all event 
+      log_formats (POSIX_LOG_BINARY, POSIX_LOG_STRING, and 
+      POSIX_LOG_NODATA).
+    * Naming convention for template object files (generated by
+      evltc command) has changed from eventtype_facilitycode.to
+      to eventtype.to.  
+3. Eliminated the use of get_cmos_time() for obtaining log_time 
+   for the initial bootup events.  Instead, evlogd now sets 
+   log_time in the initial events to system startup time. 
+   This approach provides a reasonable approximation and is 
+   portable across all platforms.  
+   
+Bug Fixes in v1.3.0:
+
+   523088   privatelog uses different log_recid sequence (and does 
+            not follow odd/even scheme described in spec.)
+   526650   Discarding duplicates can ignore timeout (and incorrect
+            facility and event_type being reported).
+   528652   evlview --filter causes core dump 			
+
+
+v1.4.0  06/05/02
+
+New Features and Enhancements in v1.4.0
+
+1) Log Management -- The evlogmgr command provides the ability to delete
+events from log file(s) that match user-specified criteria, compact and
+truncate log file(s), and manage the overall disk space required for
+log file(s).  The use of logrotate is no longer required.
+
+2) Enhanced printk (available only for kernel version 2.4.18):
+
+* For printk() messages written into evlog's kernel event buffer
+the source file name, line number, and function name where printk()
+was called, as well as the original message, can be captured in each
+event record.
+
+* The log_event_type in these event records contains a unique value
+computed from the source file name, function name, and printk() format
+string.  This will help facilitate simple queries and more straightforward
+setup of event notification for specific printk() invocations.
+
+* And finally, the evlview command has a new option, --syslog, which
+displays the printk() message from event records in the typical "syslog"
+format.  For example:
+
+        May 30 09:29:42 host-1235 kernel: device ide1(22,0)
+
+3) Events with severity of EMER, CRIT and ALERT, and events with
+log_facility of AUTHPRIV, are fdatasync-ed (committed to physical disk)
+before event notification is sent.
+
+4) Added fflush(stdout) when "evlview -n > file" option is used.
+Previously, buffered events were not committed to the file if the user
+does ctrl-c.  Also, a change was made for  "evlview -n" so that it would
+not terminate when the new evlogmgr command was executed.
+
+5) Two new log_flags values in the event record: 
+
+EVL_INTERRUPT (0x10) - Indicates that the event was logged from interrupt
+context. 
+
+EVL_PRINTK_MESSAGE  (0x20) - indicates that event was originally
+written with the printk() function.   The log_facility will always be
+LOG_KERN for this event type.  This replaces the previously defined
+event type EVL_PRINTK_MESSAGE .
+
+6) Changes / additions to the evlview command:
+
+* Added the following options to the evlview command:
+-N | --newlines Specifies the exact number of newlines between events.
+-p | --private  Specifies viewing of events from the private log file
+-d | --datefmt  Provides custom date formatting using the strftime() function
+-m | --syslog   See item 2. for details
+-R | --recid    Optional with the --new option.  Specifies the displaying
+of events from the log file with record ids greater than or equal to
+the specified recid before displaying new events.
+
+* log_event_type is now displayed in hex instead of decimal.
+
+
+
+v1.4.2  8/26/02 
+
+Enhancements / changes in v1.4.2:
+
+1) Moved config files to /etc/evlog.d:
+	action_profile
+	action_registry
+	evlog.conf
+	facility_registry
+
+2)  Fixed all potential buffer overruns caused by sprintf.
+    (now use snprintk)
+ 
+3)  Prevent malicious user from using all of evlogd's socket descriptors 
+    (denial-of-service attack).
+
+4)  posix_log_write() keeps the socket descriptor around for 
+    subsequent calls until client app exits (performance improvement).
+
+5)  Fixed maxsd computation routine when clients disconnect from evlogd 
+    and evlnotifyd.
+
+6)  posix_log_notify_* functions are now thread safe.
+
+7)  evlnotifyd no longer dies (SIGSEGV) when evlogd stops and a 
+    client attempts to register a notification request.
+
+8)  packWString() adds terminating NULL correctly.
+
+9)  Added license (GPL) to kernel/test modules
+
+
+
+v1.5.0  12/13/02
+
+New features in v1.5.0:
+
+1) A "plug-in" capability has been added so that customized 
+   "event handlers" can register with evlogd to receive the 
+   event stream and provide alternative processing and handling
+   of event records in addition to, or instead of, the standard 
+   logging/notification mechanism.  
+
+2) 2 plug-ins are provided for forwarding events from multiple 
+   hosts to a centralized "event consolidation" host:
+  * A UDP-based plug-in for "syslog-equivalent" event 
+    forwarding
+  * A TCP-based plug-in using password-authentication when 
+    a more reliable protocol is desired.
+   Logging of events to the local log files continues when one of 
+   these plug-ins is used, unless local logging is disabled. 
+
+   A new evlogrmtd daemon runs on the "event consolidation host", 
+   accepts events only from hosts in its evlhosts file, and passes
+   them to evlogd for logging to the event consolidator's local  
+   log file.  The evlogrmtd simultaneously handles events sent both
+   via UDP and TCP.
+
+   evlog-1.5.0 does not provide data encryption, and all of the 
+   hosts must be the same architecture.  Future releases will
+   provide encryption and support mixed-architecture environments.
+
+3) The evlview command now displays the hostname (local, or if
+   event originated in another host, its hostname).  Also "host" 
+   is a "pseudo attribute" than can be used in filter expressions.	
+
+4) Added a new user-space logging macro, syslogat(), which will 
+   write a message to syslog, and based on how the format string
+   is written, write additional named-attributes to the event log
+   as a POSIX_LOG_PRINTF log_format event record.
+
+   POSIX_LOG_PRINTF event records are new in this release, and 
+   this log_format keeps the format string separated from the varargs,
+   thus providing many more formatting possibilities during 
+   post-processing. 
+ 
+   A new utility, evlgentmpls, is provided which generates formatting
+   templates from the .log section in .o files using syslogat().  
+
+   A kernel equivalent of syslogat() for prink will be released in
+   early 2003.  
+
+5) Added -q, --nmeqval option to evlview, which for records that
+   have associated formatting templates, displays the non-standard 
+   attributes in name=value format, one attribute per line.
+
+6) Added -F, --force to evlfacility command to not report an error
+   if the facility already exists in the facility registry with the
+   correct facility code.
+
+7) Several formatting template changes/additions:
+   * support of const structs in templates
+   * .to file names are now in hex, instead of decimal
+   * default templates are not called default.to, instead of =1.to
+   * if EVLTMPLPATH is not set, look in /var/evlog/$LANG before 
+     /var/evlog/templates.  This allows multiple versions of a template
+     to exist on a system, optionally under control of the $LANG
+     environment variable (for multi-language support).
+      
+8) A HOW TO section has been added to the website.  Instructions
+   are provided for:
+   * Setting-up event logging to run in a RAM disk  
+   * Implementing an event handler plug-in
+   * Generation and installing formatting templates using
+     syslogat() and evlgentmpls utility.
+
+
+
+v1.5.1  02/07/2003
+
+New features in v1.5.1:
+
+1) Addresses logged in POSIX_LOG_STRING format event records as "[<aaaaaa>]",
+   where aaaaaa is an address, are now replaced by evlogd with
+   "[symbolname+offset/size]".  This information is located in the
+   /boot/System.map file, or alternative location specified with the
+   "evlogd -k" option.  Address resolution can be disabled with "evlogd -x".
+   Additional evlogd options are described in the Release Notes/INSTALL
+   procedures.
+
+2) An event buffer has been added to the TCP-based plug-in, so that during
+   periods of temporary loss-of-connection, events are not dropped by the
+   sender.  Default buffer size is 128K, but is configurable.
+
+3) "make clean" in top level directory now cleans everything it generated.
+
+Bugs fixed in v1.5.1
+
+4) Evlog daemons (evlogd, evlnotifyd, etc.) can be started multiple times
+   with scripts in /etc/rc.d/init.d/evl*.
+
+5) Duplicate time adjustment in evlogd deamon for kernel events renders
+   incorrect timestamp in event records.
+
+6) evlogrmtd will seg fault when it is built and run on IA64 platform.
+
+
+v1.5.2 04/09/2003
+
+New feature in v1.5.2:
+
+1) evlsend now supports logging binary data. See man page for details on how to use.
+
+Bugs fixed in v1.5.2
+
+2) Fix evlogrmtd daemon security issue involving password authentication.
+
+3) Fix bug 704012 posix_log_vprintf() crashes multithread applications.
+
+4) Fix bug 535525 multithread applications fail on SMP machine.
+
+5) Fix the problem caused by evlogd daemon and friends since they do not close 
+  or redirect stdin/stdout/stderr when they are going to back ground mode 
+  (that causes ssh hung if one restarts evlog then logs out)
+
+6) Some minor fixes in the library.
+ 
+v1.5.3.06/16/2003
+
+New feature in v1.5
+
+1) Remote event forwarding, mixed architectures.
+
+2) Autoconf/automake (old make style is still possible with 
+   make -f Makefile.mk).
+
+3) Enhanced duplicate discarding algorithm. See evlconfig man page for details.
+
+Bugs fixed in v1.5.3
+
+4) Fixed bug 617708 evlogmgr miscounts event records.
+
+v1.6.0-alpha 12/18/2003
+
+New features in v1.6.0
+
+1) Error Log Analyzer (ELA) infrastructure (see README.ela for more information).
+
+2) Support Opteron (X86_64) platform.
+
+3) Added printf -p option for evlsend (see evlsend man page).
+
+Bug fixed in v1.6.0-alpha
+
+1) Fixed bug [832595] - bugs in multi-arch code for templates
+
+2) Enhance: Rewrote tcp plugin to use socket to communicate to the parent (evlogd) 
+   instead of using name pipe.
+
+3) Enhance: Changed the start up order between evlnotifyd, evlactiond and evlogd
+   so that now evlnotifyd will notify early boot events.
+
+v1.6.0 04/28/2004
+
+Release version of v1.6.0  - See description above (v1.6.0-alpha).   
+
+--END--

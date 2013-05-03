@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# chkconfig: 35 09 90
+# description: Remote logging daemon
+#
+#
+
+# Source function library.
+
+REDHAT=`cat /proc/version | grep "Red Hat"`
+# Source function library.
+if [ ! -z "$REDHAT" ]
+then
+	. /etc/init.d/functions
+fi
+
+
+[ -f /sbin/evlogrmtd ] || exit 0
+
+
+RETVAL=0
+
+umask 077
+
+start() {
+ 	echo -n $"Starting remote event logger: "
+
+ 	if [ ! -z "$REDHAT" ]
+	then 	
+		daemon /sbin/evlogrmtd
+	else
+		/sbin/evlogrmtd
+	fi
+	sleep 1
+	RETVAL=$?
+	echo
+	touch /var/lock/subsys/evlogrmt
+	return $RETVAL
+}	
+stop() {
+	echo -n $"Shutting down remote event logger: "
+	
+	if [ ! -z "$REDHAT" ]
+	then
+		killproc evlogrmtd
+	else
+		PID=`ps -ef | grep evlogrmtd | grep -v grep | awk '{print $2}'`
+		if [ ! -z "$PID" ]
+		then
+			kill -s SIGTERM $PID
+		fi
+	fi
+
+	RETVAL=$?
+	echo
+	rm -f /var/lock/subsys/evlogrmt
+	if [ -e /var/run/evlogrmtd.pid ]
+	then
+		rm -f /var/run/evlogrmtd.pid
+	fi
+	return $RETVAL
+}
+rhstatus() {
+	status evlogrmtd
+}
+restart() {
+	stop
+	start
+}	
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+  	rhstatus
+	;;
+  restart|reload)
+  	restart
+	;;
+  condrestart)
+    restart	
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+	exit 1
+esac
+
+exit $?
+

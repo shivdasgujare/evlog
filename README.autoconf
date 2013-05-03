@@ -1,0 +1,23 @@
+1. What version of autoconf/automake/libtool/m4 do I need? 
+
+   The autoconf scripts is written and tested for autoconf 2.53+, 
+   automake 1.6.3+, and libtool 1.4.2+. You definitely need to 
+   upgrade if you are using a stock RedHat 7.3.
+
+   Also, you need GNU M4 1.4.1+. 
+
+2. I've got all the tools installed. Now what? 
+
+   Here's the steps: 
+
+   1) chmod +x autogen.sh setup
+        This step will be unnecessary once the autoconf patch
+        is integrated into the CVS tree. 
+   2) ./autogen.sh
+   3) ./configure 
+   4) make rpm
+   5) make rpm-tcp for tcp remote log plugins
+   6) make rpm-udp for udp remote log plugins
+
+   Run "./configure --help" to see the list of options.
+

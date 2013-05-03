@@ -1,0 +1,244 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2003
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+defaultFile = "drivers/net/e100.c";
+
+DPRINTK "EEPROM corrupted\n";
+eventName = "eepromCorrupt";
+reportType = "SRC";
+servCode = "BF777F00";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The EEPROM on the network adapter may be corrupted."
+};
+Actions = {
+	"Replace the adapter."
+};
+attributes {
+}
+
+DPRINTK "link down\n";
+eventName = "linkDown";
+Class = HARDWARE;
+Type = TEMP;
+ProbableCauses = {
+	"The network cable may be disconnected."
+};
+Actions = {
+	"Make sure the network cable is plugged in."
+};
+attributes {
+}
+
+DPRINTK "Cannot open interface, aborting.\n";
+eventName = "cantOpen";
+reportType = "SRC";
+servCode = "BF777E00";
+FRU_SRC_Priority = "H";
+Class = UNKNOWN;
+Type = UNKN;
+ProbableCauses = {
+	"Not enough memory for the driver",
+	"Unable to (re)initialize the adapter card"
+};
+Actions = {
+	"Verify the driver software level.",
+	"Reconfigure the kernel to reduce memory consumption, and reboot.",
+	"Replace the adapter."
+};
+attributes {
+}
+
+DPRINTK "Cannot enable PCI device, aborting.\n";
+eventName = "cantEnablePci";
+reportType = "SRC";
+servCode = "BF777F01";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver cannot enable the adapter as a PCI device."
+};
+Actions = {
+	"Replace the adapter."
+};
+attributes {
+}
+
+DPRINTK "Cannot find proper PCI device " "base address, aborting.\n";
+eventName = "pciBaseAddr";
+reportType = "SRC";
+servCode = "BF777F01";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver cannot enable the adapter as a PCI device."
+};
+Actions = {
+	"Replace the adapter."
+};
+attributes {
+}
+
+DPRINTK "Cannot obtain PCI resources, aborting.\n";
+eventName = "pciResources";
+reportType = "SRC";
+servCode = "BF777E01";
+FRU_SRC_Priority = "H";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"The BIOS has assigned conflicting address spaces to different devices."
+};
+Actions = {
+	"Execute diagnostics.",
+	"Upgrade your BIOS.",
+	"Replace the adapter."
+};
+attributes {
+}
+
+DPRINTK "No usable DMA configuration, aborting.\n";
+eventName = "noDmaCfg";
+reportType = "SRC";
+servCode = "BF777E02";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The driver requested a DMA configuration that your system does not support."
+};
+Actions = {
+	"Verify driver software level.",
+	"Execute diagnostics",
+	"Replace the adapter."
+};
+attributes {
+}
+
+DPRINTK "Cannot map device registers, aborting.\n";
+eventName = "mapRegs";
+reportType = "SRC";
+servCode = "BF777800";
+FRU_SRC_Priority = "M";
+Class = SOFTWARE;
+Type = UNKN;
+ProbableCauses = {
+	"Internal error in driver, kernel, or firmware"
+};
+Actions = {
+	"Verify driver software level.",
+	"Execute diagnostics."
+};
+attributes {
+}
+
+DPRINTK "Cannot alloc driver memory, aborting.\n";
+eventName = "nomem";
+reportType = "SRC";
+servCode = "BF777801";
+FRU_SRC_Priority = "M";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+	"Insufficient kernel memory is available for the driver."
+};
+Actions = {
+	"Install more memory in the system.",
+	"Reconfigure the kernel to reduce memory consumption.",
+	"Install the driver earlier in system bringup."
+};
+attributes {
+}
+
+DPRINTK "Invalid MAC address from " "EEPROM, aborting.\n";
+eventName = "badMac";
+reportType = "SRC";
+servCode = "BF777E03";
+FRU_SRC_Priority = "M";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The adapter's MAC address is not a valid Ethernet address."
+};
+Actions = {
+	"Verify driver software level.",
+	"Execute diagnostics.",
+	"Replace adapter."
+};
+attributes {
+}
+
+DPRINTK "Cannot register net device, aborting.\n";
+eventName = "cantRegisterDev";
+reportType = "SRC";
+servCode = "BF777802";
+FRU_SRC_Priority = "M";
+Class = UNKNOWN;
+Type = UNKN;
+ProbableCauses = {
+	"Internal error in driver, kernel, or firmware"
+};
+Actions = {
+	"Verify driver software level.",
+	"Execute diagnostics."
+};
+attributes {
+}
+
+DPRINTK "Self-test failed: result=0x%08X\n";
+eventName = "selfTestFailed";
+reportType = "SRC";
+servCode = "BF777F02";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The network adapter failed its self-test."
+};
+Actions = {
+	"Replace the adapter."
+};
+attributes {
+	uint result "%#08X";
+}
+
+DPRINTK "Self-test failed: timed out\n";
+eventName = "selfTestTimeout";
+reportType = "SRC";
+servCode = "BF777F02";
+FRU_SRC_Priority = "H";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+	"The network adapter timed out during its self-test."
+};
+Actions = {
+	"Replace the adapter."
+};
+attributes {
+}

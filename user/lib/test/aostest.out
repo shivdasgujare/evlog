@@ -1,0 +1,36 @@
+event type 4001:
+OSU Football 2001
+01/01/2001: Beat Notre Dame
+09/02/2001: Lost to Fresno State
+09/08/2001: Beat NM State
+09/29/2001: Lost to UCLA
+10/06/2001: Lost to WSU
+10/13/2001: Beat Arizona
+10/20/2001: Lost to ASU
+10/27/2001: Beat Cal
+11/03/2001: Lost to USC (OT)
+11/10/2001: Beat Washington
+11/17/2001: Beat N. Arizona
+12/01/2001: Lost to Oregon
+
+event type 4002:
+Dates of Easter, 2001-2010
+date[0] = 04/15/2001
+date[1] = 03/31/2002
+date[2] = 04/20/2003
+date[3] = 04/11/2004
+date[4] = 03/27/2005
+date[5] = 04/16/2006
+date[6] = 04/08/2007
+date[7] = 03/23/2008
+date[8] = 04/12/2009
+date[9] = 04/04/2010
+
+event type 4003:
+problem = Filesystem full
+likely causes:
+Probable cause[0] = cause=Operator fell asleep; suspect=operator; probability=0.30
+Probable cause[1] = cause=Backhoe severed cable(s); suspect=utility company; probability=0.35
+Probable cause[2] = cause=Coffee spilled on keyboard; suspect=engineer; probability=0.15
+Probable cause[3] = cause=Network down; suspect=building maintenance; probability=0.20
+

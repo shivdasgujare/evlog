@@ -1,0 +1,94 @@
+#!/bin/bash
+#
+# chkconfig: 35 90 40
+# description: Action daemon
+#
+#
+
+# Source function library.
+
+REDHAT=`cat /proc/version | grep "Red Hat"`
+# Source function library.
+if [ ! -z "$REDHAT" ]
+then
+	. /etc/init.d/functions
+fi
+
+
+[ -f /sbin/evlactiond ] || exit 0
+
+
+RETVAL=0
+
+umask 077
+
+start() {
+ 	echo -n $"Starting notification action daemon: "
+ 	
+ 	if [ ! -z "$REDHAT" ]
+ 	then
+		daemon /sbin/evlactiond
+    else
+   		/sbin/evlactiond
+   	fi
+   	
+	RETVAL=$?
+	echo
+	touch /var/lock/subsys/evlaction
+	return $RETVAL
+}	
+stop() {
+	echo -n $"Shutting down notification action daemon: "
+	if [ ! -z "$REDHAT" ]
+ 	then
+		killproc evlactiond
+    else
+		PID=`ps -ef | grep evlactiond | grep -v grep | awk '{print $2}'`
+		if [ ! -z "$PID" ]
+		then
+			kill -s SIGTERM $PID
+		fi
+	fi
+	
+	RETVAL=$?
+	echo
+	rm -f /var/lock/subsys/evlaction
+	
+	if [ -e /var/run/evlactiond.pid ]
+	then
+		rm -f /var/run/evlactiond.pid
+	fi
+	
+	return $RETVAL
+}
+rhstatus() {
+	status evlactiond
+}
+restart() {
+	stop
+	start
+}	
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+  	rhstatus
+	;;
+  restart|reload)
+  	restart
+	;;
+  condrestart)
+    restart	
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+	exit 1
+esac
+
+exit $?
+

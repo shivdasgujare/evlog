@@ -1,0 +1,442 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+facility FACILITY;
+#define E1000_ERR_PFX "e1000: "
+#define DPRINTK_PFX_FMT "e1000: %s: %s: "
+#define DPRINTK_PFX_ATTS string dev_name; string function;
+
+/* 1-4 moved to pci.pt */
+
+/*5*/
+dev_printk "No usable DMA configuration, aborting\n";
+printk E1000_ERR_PFX "No usable DMA configuration, aborting\n";
+	/* JG: reported by the probe error, this can be ignored */
+eventName = "noDmaCfg";
+reportType = "SRC";
+servCode = "BF778E00";
+FRU_SRC_Priority = "H";
+File = "drivers/net/e1000/e1000_main.c";
+Class = HARDWARE;
+Type = 	PERM;
+ProbableCauses = {
+	"Unable to enable DMA for either 32 or 64 bits"
+};
+Actions = {
+	"Verify driver software level",
+	"Execute diagnostics",
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/* 6-8 moved to pci.pt */
+
+/*9*/
+/* event_type "Unable to access PCI resources\n"; */
+/* Janice says this can be ignored. I don't see this this message in
+e1000_main.c anyway. */
+
+/*10*/
+event_type "The EEPROM Checksum Is Not Valid\n";
+eventName = "eepromCksum";
+reportType = "SRC";
+servCode = "BF778E01";
+FRU_SRC_Priority = "H";
+File = "drivers/net/e1000/e1000_main.c";
+Class = HARDWARE;
+Type = 	PERM;
+ProbableCauses = {
+	"Unable to access pci data area for checksum value; "
+		"however, the device id is valid."
+};
+Actions = {
+	"Verify Driver Software Level",
+	"Execute diagnostics",
+	"Replace board"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*10*/
+printk E1000_ERR_PFX "Unknown MAC Type\n";
+netdev_printk "Unknown MAC Type\n";
+DPRINTK "Unknown MAC Type\n";
+eventName = "badMac";
+reportType = "SRC";
+servCode = "BF778E02";
+FRU_SRC_Priority = "H";
+File = "drivers/net/e1000/e1000_main.c";
+Class = HARDWARE;
+Type = 	PERM;
+ProbableCauses = {
+	"The MAC type is not ethernet as expected."
+};
+Actions = {
+	"Verify Driver Software Level",
+	"Execute diagnostics",
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*11*/
+printk E1000_ERR_PFX "Invalid MTU setting\n";
+netdev_printk "Invalid MTU setting\n";
+DPRINTK "Invalid MTU setting\n";
+eventName = "badMtu";
+File = "drivers/net/e1000/e1000_main.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Maximum transmission unit (packet size) is incorrectly set."
+		"  This value must be between 64 and 16128."
+};
+Actions = {
+	"Use ifconfig (or another network configuration tool) "
+		"to set the MTU value within range."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*12*/
+printk E1000_ERR_PFX "Jumbo Frames not supported on 82542\n";
+netdev_printk "Jumbo Frames not supported on 82542\n";
+DPRINTK "Jumbo Frames not supported on 82542\n";
+eventName = "jumboFrames";
+File = "drivers/net/e1000/e1000_main.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"You have configured the MTU size for a value appropriate for Jumbo Frames; "
+	 	"however, the adapter does not support Jumbo Frames."
+};
+Actions = {
+	"Use ifconfig (or another network configuration tool) "
+		"to set the MTU value less than or equal to 1518."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*13*/
+event_type "EEPROM Read Error";
+eventName = "eepromRead";
+reportType = "SRC";
+servCode = "BF778F00";
+FRU_SRC_Priority = "H";
+File = "drivers/net/e1000/e1000_hw.c";
+Class = HARDWARE;
+Type = 	PERM;
+ProbableCauses = {
+	 "adapter h/w failure"
+};
+Actions = {
+	"Verify Driver Software Level",
+	"Execute diagnostics",
+	"Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*14*/
+event_type "Flow control param set incorrectly";
+eventName = "flowCtrl";
+File = "drivers/net/e1000/e1000_hw.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"software error.  Flow control can be set to\n"
+	"0) completely disabled\n"
+	"1) rx flow enabled (we can receive pause frames, but not send them),\n"
+	"2) tx flow enabled (we can send pause frames, but not receive them), or\n"
+	"3) Both rx and tx flow control is enabled.\n"
+	"A value other than 0-3 was received.\n"
+	/* Janice says 1-4, but it looks like 0-3.  Need to verify this. */
+};
+Actions = {
+	"Validate s/w level",	/* Huh? */
+	"Set the FlowControl configuration option for this adapter to "
+		"a value in the range 0-3."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*15*/
+printk "Warning: no configuration for board #%i\n";
+DPRINTK "Warning: no configuration for board #%i\n";
+netdev_printk "Warning: no configuration for board #%i.  " "Using defaults for all values\n";
+eventName = "noCfg";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The number of network adapters in the system that are associated "
+		"with the e1000 driver exceeds E1000_MAX_NIC.  E1000_MAX_NIC "
+		"is set in e1000_param.c, but can be overridden by the "
+		"e1000_param.c module parameter."
+};
+Actions ={
+	"Change E1000_MAX_NIC in e1000_param.c and rebuild the driver, "
+		"or change the startup module parameter."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+	int board;
+}
+
+/*16*/
+event_type "Speed not valid for fiber adapters, parameter ignored\n";
+eventName = "badSpeedFiber";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Fiber adapters support 1000 Mbps only."
+};
+Actions = {
+	"Use the default values with fiber adapters.  There is no need to set the Speed parameter."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*17*/
+event_type "Duplex not valid for fiber adapters, parameter ignored\n";
+eventName = "duplexFiber";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"Fiber adapters support Full duplex only."
+};
+Actions = {
+	"Use the default values with fiber adapters.  There is no need to set the Duplex parameter."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*18*/
+event_type "AutoNeg other than Full/1000 is not valid for fiber adapters, parameter ignored\n";
+eventName = "autoNegFiber";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	 "Fiber adapters support 1000 Mbps full-duplex only."
+};
+Actions = {
+	"Use the default values with fiber adapters.  There is no need to specify AutoNeg."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*19*/
+event_type "AutoNeg specified along with Speed or Duplex, parameter ignored\n";
+eventName = "autoNegSpeedDuplex";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	 "AutoNeg and Speed/Duplex are mutually exclusive parameters."
+};
+Actions = {
+	"Set either AutoNeg (Duplex=0) only, or set both Speed and Duplex "
+		"parameter values, or set none of them."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*20, 22*/
+printk "Half Duplex specified without Speed\n";
+DPRINTK "Half Duplex specified without Speed\n";
+netdev_printk "Half Duplex specified without Speed.  " "Using Autonegotiation at Half Duplex only\n";
+eventName = "halfDuplexNoSpeed";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"A Duplex parameter of 1 (Half Duplex) was specified, but no Speed "
+		"parameter was specified."
+};
+Actions = {
+	"Set the Speed along with the Duplex, or accept the defaults "
+		"(1000/Full-Duplex for fiber, AutoNeg for Copper)."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*21*/
+printk "Full Duplex specified without Speed\n";
+DPRINTK "Full Duplex specified without Speed\n";
+netdev_printk "Full Duplex specified without Speed.  " "Using Autonegotiation at Full Duplex only\n";
+eventName = "fullDuplexNoSpeed";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"A Duplex parameter of 2 (Full Duplex) was specified, but no Speed "
+		"parameter was specified."
+};
+Actions = {
+	"Set the Speed along with the Duplex, or accept the defaults "
+		"(1000/Full-Duplex for fiber, AutoNeg for Copper)."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*23*/
+printk "10 Mbps Speed specified without Duplex\n";
+DPRINTK "10 Mbps Speed specified without Duplex\n";
+netdev_printk "10 Mbps Speed specified without Duplex.  " "Using Autonegotiation at 10 Mbps only\n";
+eventName = "speed10NoDuplex";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	 "The Speed parameter was set, but the Duplex parameter was not."
+};
+Actions = {
+	"Set the Duplex along with the Speed, or accept the defaults "
+		"(1000/Full-Duplex for fiber, AutoNeg for Copper)."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*24*/
+printk "100 Mbps Speed specified without Duplex\n";
+DPRINTK "100 Mbps Speed specified without Duplex\n";
+netdev_printk "100 Mbps Speed specified without Duplex.  " "Using Autonegotiation at 100 Mbps only\n";
+eventName = "speed100NoDuplex";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	 "The Speed parameter was set, but the Duplex parameter was not."
+};
+Actions = {
+	"Set the Duplex along with the Speed, or accept the defaults "
+		"(1000/Full-Duplex for fiber, AutoNeg for Copper)."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*25*/
+printk "1000 Mbps Speed specified without Duplex\n";
+DPRINTK "1000 Mbps Speed specified without Duplex\n";
+netdev_printk "1000 Mbps Speed specified without Duplex.  " "Using Autonegotiation at 1000 Mbps Full Duplex only\n";
+eventName = "speed1000NoDuplex";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	 "The Speed parameter was set, but the Duplex parameter was not."
+};
+Actions = {
+	"Set the Duplex along with the Speed, or accept the defaults "
+		"(1000/Full-Duplex for fiber, AutoNeg for Copper)."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*26*/
+printk "Half Duplex is not supported at 1000 Mbps\n";
+DPRINTK "Half Duplex is not supported at 1000 Mbps\n";
+netdev_printk "Half Duplex is not supported at 1000 Mbps.  " "Using Autonegotiation at 1000 Mbps Full Duplex only\n";
+eventName = "halfDuplex1000";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The Duplex parameter was set to 1 (Half Duplex), but the Speed "
+		"parameter was set to 1000 Mbps."
+};
+Actions = {
+	"Set the Duplex value to 2 (Full Duplex), or accept the defaults "
+		"(1000/Full-Duplex for fiber, AutoNeg for Copper)."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*27*/ 
+event_type "Speed, AutoNeg and MDI-X specifications are "
+	"incompatible. Setting MDI-X to a compatible value.\n";
+eventName = "speedAutoNegMdiX";
+File = "drivers/net/e1000/e1000_param.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+	"The MDI value selected by the driver is incompatible with the "
+		"settings of the Speed and AutoNeg parameters."
+};
+Actions = {
+	"Look for a driver update.  The MDI value is defined by the "
+		"e1000 driver.  Or accept the default values for Speed "
+		"and AutoNeg.  The driver can autodetect Speed and Duplex."
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+/*
+ * NOTE: Moved events 28-50 to a separate file, net_monitor.pt, because:
+ * 1) they're all from net_monitor.c, a file that has not yet been accepted
+ * into Linux, and
+ * 2) they can apply to many different net drivers (they're not
+ * e1000-specific), and so should be addressed separately.
+ */

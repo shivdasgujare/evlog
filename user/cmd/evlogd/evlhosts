@@ -1,0 +1,16 @@
+#
+# this file contains the evlog host name, host id information. The host name
+# will be resolved via dns or /etc/hosts. Host id could be in the form of
+
+# 0.0 - 255.255
+# 0x0000 - 0xffff
+# or  just decimal.
+#
+# Fields are separated with tabs or spaces.
+#
+# For example:
+#
+# hostid 	hostname
+# --------	--------
+# 1		mylinuxbox 
+# 10.128	mylinuxbox2 	

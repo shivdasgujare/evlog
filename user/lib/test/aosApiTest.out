@@ -1,0 +1,95 @@
+12 elements
+Element 0:
+date = 01/01/2001
+desc = Beat Notre Dame
+Element 1:
+date = 09/02/2001
+desc = Lost to Fresno State
+Element 2:
+date = 09/08/2001
+desc = Beat NM State
+Element 3:
+date = 09/29/2001
+desc = Lost to UCLA
+Element 4:
+date = 10/06/2001
+desc = Lost to WSU
+Element 5:
+date = 10/13/2001
+desc = Beat Arizona
+Element 6:
+date = 10/20/2001
+desc = Lost to ASU
+Element 7:
+date = 10/27/2001
+desc = Beat Cal
+Element 8:
+date = 11/03/2001
+desc = Lost to USC (OT)
+Element 9:
+date = 11/10/2001
+desc = Beat Washington
+Element 10:
+date = 11/17/2001
+desc = Beat N. Arizona
+Element 11:
+date = 12/01/2001
+desc = Lost to Oregon
+10 elements
+Element 0:
+month = 4
+day = 15
+year = 2001
+Element 1:
+month = 3
+day = 31
+year = 2002
+Element 2:
+month = 4
+day = 20
+year = 2003
+Element 3:
+month = 4
+day = 11
+year = 2004
+Element 4:
+month = 3
+day = 27
+year = 2005
+Element 5:
+month = 4
+day = 16
+year = 2006
+Element 6:
+month = 4
+day = 8
+year = 2007
+Element 7:
+month = 3
+day = 23
+year = 2008
+Element 8:
+month = 4
+day = 12
+year = 2009
+Element 9:
+month = 4
+day = 4
+year = 2010
+4 elements
+Element 0:
+cause = Operator fell asleep
+suspect = operator
+probability = 0.30
+Element 1:
+cause = Backhoe severed cable(s)
+suspect = utility company
+probability = 0.35
+Element 2:
+cause = Coffee spilled on keyboard
+suspect = engineer
+probability = 0.15
+Element 3:
+cause = Network down
+suspect = building maintenance
+probability = 0.20

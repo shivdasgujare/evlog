@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+# chkconfig: 35 80 50
+# description: Event notification service
+#
+#
+
+# Source function library.
+
+REDHAT=`cat /proc/version | grep "Red Hat"`
+# Source function library.
+if [ ! -z "$REDHAT" ]
+then
+	. /etc/init.d/functions
+fi
+
+
+[ -f /sbin/evlnotifyd ] || exit 0
+
+
+RETVAL=0
+
+umask 077
+
+start() {
+ 	echo -n $"Starting enterprise event log notification: "
+ 	
+ 	if [ ! -z "$REDHAT" ]
+ 	then
+		daemon /sbin/evlnotifyd
+	else
+		/sbin/evlnotifyd
+	fi
+	sleep 1	
+	RETVAL=$?
+	echo
+	touch /var/lock/subsys/evlnotify
+	return $RETVAL
+}	
+stop() {
+	echo -n $"Shutting down enterprise event log notification: "
+	
+	if [ ! -z "$REDHAT" ]
+ 	then
+ 		killproc evlnotifyd
+	else
+		PID=`ps -ef | grep evlnotifyd | grep -v grep | awk '{print $2}'`
+		if [ ! -z "$PID" ]
+		then
+			kill -s SIGTERM $PID
+		fi
+	fi
+	
+	RETVAL=$?
+	echo
+	rm -f /var/lock/subsys/evlnotify
+	
+	if [ -e /var/run/evlnotifyd.pid ]
+	then
+		rm -f /var/run/evlnotifyd.pid
+	fi
+	
+	return $RETVAL
+}
+rhstatus() {
+	status evlnotifyd
+}
+restart() {
+	stop
+	start
+}	
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+  	rhstatus
+	;;
+  restart|reload)
+  	restart
+	;;
+  condrestart)
+    restart	
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+	exit 1
+esac
+
+exit $?
+

@@ -1,0 +1,61 @@
+#
+# tcp_rmtlog_be plugin
+#
+Summary:   @RPM_TCP_RMTLOG_BE_DESC@
+Name:      @RPM_TCP_RMTLOG_BE_NAME@
+Version:   @RPM_VERSION@
+Release:   @RPM_RELEASE@
+Copyright: LGPL
+Vendor:    IBM <http://www.ibm.com>
+Url:       http://evlog.sourceforge.net
+
+Packager:  @PACKAGER@
+Group:     System Environment/Base
+Source:    @RPM_TCP_RMTLOG_BE_NAME@-@RPM_VERSION@.tar.gz
+BuildRoot: /var/tmp/%{name}-buildroot
+
+%description
+@RPM_TCP_RMTLOG_BE_DESC@
+
+%prep
+%setup
+CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" $LOCALFLAGS
+./configure @ac_configure_args@ 
+
+%build
+make -C user/lib
+make -C user/cmd/evlogd/@RPM_TCP_RMTLOG_BE_NAME@
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make -C user/cmd/evlogd/@RPM_TCP_RMTLOG_BE_NAME@ DESTDIR=$RPM_BUILD_ROOT install
+
+
+	
+	
+cd $RPM_BUILD_ROOT
+find . -type d | sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' | grep -v "/usr/lib" > $RPM_BUILD_DIR/file.list.@RPM_TCP_RMTLOG_BE_NAME@
+find . -type f | sed 's,^\.,\%attr(-\,root\,root) ,' | grep -v "librmt_common.*" >> $RPM_BUILD_DIR/file.list.@RPM_TCP_RMTLOG_BE_NAME@
+find . -type l | sed 's,^\.,\%attr(-\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.@RPM_TCP_RMTLOG_BE_NAME@
+
+
+%pre
+  
+	
+%post
+
+	
+%preun
+
+	
+%postun
+
+
+%clean
+
+
+%files -f ../file.list.@RPM_TCP_RMTLOG_BE_NAME@
+
+%changelog
+* Fri Nov 22 2002 @RPM_PACKAGER@
+- First RPM build

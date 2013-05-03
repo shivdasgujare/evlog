@@ -1,0 +1,38 @@
+#!/bin/bash
+
+prefix=ela
+
+ELA_SCRIPTS_DIR=/usr/share/evlog
+#
+# commands
+#
+ELA_FAKE_EVENT=$ELA_SCRIPTS_DIR/ela_fake_event
+ELA_CONSOLE=$ELA_SCRIPTS_DIR/ela_console
+ELA_CRT_RPT=$ELA_SCRIPTS_DIR/ela_crt_rpt
+ELA_SIG=$ELA_SCRIPTS_DIR/ela_sig
+
+. $ELA_SCRIPTS_DIR/ela_funcs
+old_recid=$1
+
+# Manufacture a new version of the indicated record, with the appropriate
+# ELA information added in.  Pass that record around to the various
+# alert handlers.
+recid=$($ELA_FAKE_EVENT $old_recid ipr "/tmp/$prefix%d")
+
+#
+# Write to console
+#
+$ELA_CONSOLE $recid
+
+#
+# Create ela_report
+#
+$ELA_CRT_RPT $recid
+#
+# Invoke diagEventService
+#
+
+#
+# Notify CIM indication provider
+#
+$ELA_SIG $recid

@@ -1,0 +1,63 @@
+This package contains event-logging templates for the following drivers:
+
+1. e100 (Ethernet)
+2. emulex (lpfc fiber channel driver)
+3. ipr (SCSI)
+4. bcm5700 (Broadcom ethernet)
+5. e1000 (Ethernet)
+6. pcnet32 (Ethernet)
+7. olympic (Token-ring)
+
+Prerequisites
+-------------
+To build the templates, you need:
+- evlog-1.6.1
+
+To use the installed templates, you need to do the following:
+- The kernel should be patched with the following kernel patches:
+        - evlog-2.6.x.patch (basic evlog capabilities)
+        - dev_evlog-2.6.x.patch (makes the dev_printk macro log to evlog
+           as well as printk)
+- In the *config menu system, under General Setup, the options
+   "Event logging support" and "Forward printk messages to event log"
+   should be enabled.
+
+Installation
+------------
+
+1. Change directory to /usr/share/doc/packages/evlog/templates and edit the
+   evlog_env file to your environment. 
+   Change to the driver directory and then run 'make'.  make creates binary
+   templates (with the *.to extension) and (for some drivers) puts them
+   in a subdirectory.  It also creates one or more 'ela rules' files
+   (with .rules extension).  For example:
+	
+	cd /usr/share/doc/packages/evlog/templates
+	vi evlog_env
+	cd ipr
+	make
+
+   Note: if 'make' may fail if you don't have the facility registered, then
+         use 'evlfacility -a <facility name>' to register a facility.
+
+2. As root,
+
+	make install
+
+
+3. The ela rules files are also created by make.  (In this example, the
+   ipr_main.rules and ipr_sub.rules are created.)  One can load the ela
+   rules using the ela_add utility (as root).
+
+	/sbin/ela_add -f ipr_main.rules
+	/sbin/ela_add -f ipr_sub.rules
+
+4. Note that the ela rules need to be reloaded after each system reboot. One\      can reload the ela rules automatically with a startup script, as follows. 
+   
+	a) Edit the /usr/share/evlog/load_ela_rules.sh to match your 
+	   environment.
+	
+	b) Load this /usr/share/evlog/load_ela_rules.sh with 
+	   /etc/rc.d/rc.local by adding /usr/share/evlog/load_ela_rules.sh at
+	   the end of the file.
+

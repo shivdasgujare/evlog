@@ -1,0 +1,95 @@
+ 
+             Enterprise Class Event Logging for Linux
+                   ========================================
+Content
+--------
+ 1. Introduction
+ 2. How to install
+ 3. Known Bugs
+ 4. License
+ 5. Version
+ 6. Change History
+ 7. Reporting Bugs
+ 8. Authors
+
+
+
+1. Introduction
+---------------
+
+A full description of Enterprise-Class Event logging can be found at:
+
+  http://evlog.sourceforge.net/
+
+Not all of the features described in the specification have been
+provided.  For a list of these features, see the following:
+
+  http://evlog.sourceforge.net/not_yet_available.html
+  
+	
+2. How to install
+------------------
+
+See the INSTALL file.
+
+
+
+3. Known Bugs
+-------------
+
+See bug tracker on the project page for more details.
+
+530006   Forwarding of syslog msgs = xdm failure
+         (This problem has not been observed on Red Hat 8.0
+          nor SuSE SLES8 (UL 1.0)
+586100   ppc64: evlview fails with long, pointer
+
+
+4. License 
+----------
+
+The kernel patch is licensed under the GNU General Public License (GPL)
+Version 2, June 1991.  The full text of the GPL is located at:
+
+evlog/kernel/GPL
+
+The evlogd daemon is also licensed under the GPL.
+
+---
+
+The user library is licensed under the GNU Lesser Public License (LGPL)
+Version 2.1, February 1999.  The full text of the LGPL is located at:
+
+evlog/user/LGPL
+
+
+5. Latest Version
+-----------------
+
+1.6.0
+
+
+
+6. Change History
+-----------------
+
+See the CHANGES file.
+
+
+
+7. Reporting Bugs
+-----------------
+If you encounter a bug, please submit it to the project bug list,
+located on the project page:
+
+   https://sourceforge.net/projects/evlog/
+
+
+
+8. Authors
+-----------
+
+Jim Keniston    kenistoj@users.sourceforge.net
+Larry Kessler   lkessler@users.sourceforge.net
+Hien Nguyen     nguyhien@users.sourceforge.net
+

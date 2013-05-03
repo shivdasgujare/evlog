@@ -1,0 +1,4 @@
+#
+# Action registry format
+# nfy_id:filter:action command:uid:gid:once only flag:threshold:interval:nfy_name:forany
+#

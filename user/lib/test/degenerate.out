@@ -1,0 +1,42 @@
+USER 4101 ERR:
+Quarterback misread coverage.
+USER 4102 ERR:
+Tailback ran before he had the ball.
+USER 4103 ERR:
+Holder fumbled snap.
+USER 4104 ERR:
+Cornerback was playing too far off the receiver.
+USER 4105 ERR:
+Wide receiver ran wrong route.
+USER 4111 INFO:
+Server starting...
+USER 4112 INFO:
+Server shutting down...
+USER 4113 INFO:
+Client connecting...
+USER 4114 INFO:
+Client disconnecting...
+USER 4115 INFO:
+My client pleads not guilty, your honor.
+USER 4116 INFO:
+Server would get a bigger tip if he would actually write down our order
+rather than trying to impress us by memorizing it.
+USER 4121 NOTICE:
+category=client
+msg=Client connection refused: authentication failed
+USER 4122 NOTICE:
+category=client
+msg=Client connection refused: connection limit exceeded
+-----
+USER 4113 INFO:
+Client connecting...
+USER 4114 INFO:
+Client disconnecting...
+USER 4115 INFO:
+My client pleads not guilty, your honor.
+USER 4121 NOTICE:
+category=client
+msg=Client connection refused: authentication failed
+USER 4122 NOTICE:
+category=client
+msg=Client connection refused: connection limit exceeded

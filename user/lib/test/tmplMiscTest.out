@@ -1,0 +1,64 @@
+event type 5001:
+c=c
+i=1
+d=1.10
+d2=220.00
+s=string s
+msg=This is the message for event type 5001.
+event type 5012:
+name=Donald Duck, type=0x2(inhuman|adult|male) = 0x2(Adult) = 2
+name=Daisy Duck, type=0x6(inhuman|adult|female) = 0x6(Adult|Female) = 6
+name=Dewey Duck, type=0x0(inhuman|juvenile|male) = 0x0 = 0
+name=April Duck, type=0x4(inhuman|juvenile|female) = 0x4(Female) = 4
+name=Fred Flintstone, type=0x3(human|adult|male) = 0x3(Human|Adult) = man
+name=Wilma Flintstone, type=0x7(human|adult|female) = 0x7(Woman) = woman
+name=Pebbles Flintstone, type=0x5(human|juvenile|female) = 0x5(Girl) = girl
+name=Bambam Rubble, type=0x1(human|juvenile|male) = 0x1(Human) = boy
+
+This is the message for event type 5002.
+event type 5003:
+Employee Name:	George W. Bush
+Home Address:
+1600 Pennsylvania Ave. NW
+Washington, DC 20502
+USA
+Job Title:	US President
+Annual Salary:	200000.00
+Start Date (m/d/y):	1/20/2001
+This is the message for event type 5003.
+event type 5004:
+The Flagstons:
+parents: Hi Lois 
+sons: Chip Ditto 
+daughters: Dot Trixie 
+cats: 
+dogs: Dawg 
+computers: 
+others: 
+event type 5005:
+The Flintstones:
+fatherFlag: 1
+motherFlag: 1
+sonFlag: 0
+daughterFlag: 1
+catFlag: 0
+dogFlag: 0
+computerFlag: 0
+otherFlag: 1
+father: Fred 
+mother: Wilma 
+son: 
+daughter: Pebbles 
+cat: 
+dog: 
+computer: 
+others: Dino 
+event type 5006:
+This message should be followed by 3 extra strings.
+Extra string 1
+Extra string 2
+Extra string 3
+
+event type 812611159:
+Test of specifying event_type as string in template.
+If you see this line, we probably passed.

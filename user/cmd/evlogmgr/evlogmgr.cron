@@ -1,0 +1,5 @@
+# Everyday at 2:00 am run evl log manager and remove records ithat are older than 30 days
+0 2 * * * root /sbin/evlogmgr -c 'age > "30d"'
+
+# Everyday  at 1:00 am run evl log manager and remove records with severity=DEBUG
+0 1 * * * root /sbin/evlogmgr -c "severity=DEBUG"

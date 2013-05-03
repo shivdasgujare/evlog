@@ -1,0 +1,217 @@
+#!/bin/bash
+
+prefix=ela
+self_rec_get=0
+
+rpt_file=""
+ELA_SCRIPTS_DIR=/usr/share/evlog
+
+. $ELA_SCRIPTS_DIR/ela_funcs
+. $ELA_SCRIPTS_DIR/ela_vpd_funcs
+
+recid=${1}
+
+
+rpt_file=$(get_ela_file_name "$recid")
+#echo ${rpt_file}
+
+#
+# If temporary storage is not created then create it
+#
+#
+# begin_rec_get - Capture the event record with this recid and 
+# put it in our temporary storage - Subsequent get_* will work
+# of this temporary storage.
+#  
+did_get_rec $prefix $recid
+ret=$?
+if [ $ret -eq "0" ]; then
+	begin_rec_get $prefix $recid
+	if [ $? -eq 1 ]; then
+		echo "Error: can't find event record with recid=${recid}"
+		exit 1
+	fi
+	self_rec_get=1
+fi
+
+rpt_type=$(get_event_non_std_att "$prefix" "$recid" "reportType")
+if [ -z "$rpt_type" ]; then
+	rpt_type="MENU"
+fi
+
+new_report_date_time $rpt_file
+
+if [ "$rpt_type" = "SRC" -o "$rpt_type" = "SRC_MENU" ]; then
+	#
+	# write src report
+	#
+	src=$(get_event_non_std_att "$prefix" "$recid" "servCode")
+	fru_src_type="1";
+	fru_src_procedure="n/a"
+	fru_src_priority=$(get_event_non_std_att "$prefix" "$recid" "FRU_SRC_Priority")
+	
+	write_SRN_SRC ${rpt_file} ${src}
+	#
+	# get error text
+	#
+	msg_text=$(get_event_msg "$prefix" "$recid")
+	write_msg_text $rpt_file "$msg_text"
+#
+# There is no catalog message for event log yet (comment these out)
+#
+#	catfile=$(get_event_non_std_att "$prefix" "$recid" "catalog")
+#	if [ -z "$catfile" ]; then
+#		catfile="evlogcatalog.cat"
+#	fi
+#	msgset=$(get_event_non_std_att "$prefix" "$recid" "msgset")
+#	if [ -z "$msgset" ]; then
+#		msgset=1
+#	fi
+#	msgid=$(get_event_non_std_att "$prefix" "$recid" "msgid")
+#	if [ -z "$msgid" ]; then
+#		msgid=100
+#	fi
+#	write_cat_info $rpt_file $catfile $msgset $msgid
+
+	#
+	# getFru stuff
+	#
+	if [ -e /sbin/lsvpd ]; then
+		begin_lsvpd $prefix $recid
+		bus_id=$(get_event_non_std_att "$prefix" "$recid" "bus_id")
+		if [ -z "$bus_id" ]; then
+		# There is no bus id information, try to get the dev_name
+			dev_name=$(get_event_non_std_att "$prefix" "$recid" "dev_name")
+			
+			if [ -z "$dev_name" ]; then
+			# there is no dev_name either, quit getting fru
+				loc="n/a"
+				fru="n/a"
+				fru_serial="n/a"
+				fry_ccin="n/a"
+			else
+				get_dev_vpd "$prefix" "$recid" "$dev_name"
+				loc=$(get_dev_loc)
+				fru=$(get_dev_fru)
+				fru_serial=$(get_dev_fru_serial)
+				fru_ccin=$(get_dev_ccin)
+			fi
+		else
+			loc=$busid
+			get_dev_vpd "$prefix" "$recid" "$bus_id"
+			fru=$(get_dev_fru)
+			fru_serial=$(get_dev_serial)
+			fru_ccin=$(get_dev_ccin)
+		fi
+		end_lsvpd $prefix $recid
+	else
+		loc="n/a"
+		fru="n/a"
+		fru_serial="n/a"
+		fru_ccin="n/a"
+	fi
+	
+	write_FRU_SRC $rpt_file "$fru_src_priority" "$fru_src_type" "$fru_src_procedure" "$loc" "$fru" "$fru_serial" "$fru_ccin"
+	write_log_seq $rpt_file $recid
+fi
+
+if [ "$rpt_type" = "SRN" -o "$rpt_type" = "SRN_MENU" ]; then
+	#
+	# write srn
+	#
+	srn=$(get_event_non_std_att "$prefix" "$recid" "servCode")
+	write_SRN ${rpt_file} ${srn}
+	#
+	# get error description
+	#
+	msg_text=$(get_event_msg "$prefix" "$recid")
+	#echo "msg_text=$msg_text"
+	write_msg_text $rpt_file "$msg_text"
+#
+# There is no catalog message for event log yet (comment these out)
+#
+#	catfile=$(get_event_non_std_att "$prefix" "$recid" "catalog")
+#	if [ -z "$catfile" ]; then
+#		catfile="evlogcatalog.cat"
+#	fi
+#	msgset=$(get_event_non_std_att "$prefix" "$recid" "msgset")
+#	if [ -z "$msgset" ]; then
+#		msgset=1
+#	fi
+#	msgid=$(get_event_non_std_att "$prefix" "$recid" "msgid")
+#	if [ -z "$msgid" ]; then
+#		msgid=100
+#	fi
+#	write_cat_info $rpt_file $catfile $msgset $msgid
+	#
+	# getFRU
+	#
+	if [ -e /sbin/lsvpd ]; then
+		begin_lsvpd $prefix $recid
+		bus_id=$(get_event_non_std_att "$prefix" "$recid" "bus_id")
+
+		if [ -z "$bus_id" ]; then
+		# There is no bus id information, try to get the dev_name
+			dev_name=$(get_event_non_std_att "$prefix" "$recid" "dev_name")
+			if [ -z "$dev_name" ]; then
+			# there is no dev_name either, quit getting fru now
+				loc="n/a"
+				fru="n/a"
+			else
+				get_dev_vpd "$prefix" "$recid" "$dev_name"
+				loc=$(get_dev_loc)
+				fru=$(get_dev_fru)
+			fi
+		else
+			loc=$bus_id
+			get_dev_vpd "$prefix" "$recid" "$bus_id"
+			fru=$(get_dev_fru)
+		fi
+		end_lsvpd $prefix $recid
+	else
+		loc="n/a"
+		fru="n/a"
+	fi
+
+	#
+	# The refcode is n/a for now
+	#
+	refcode="n/a"
+
+	write_FRU $rpt_file "$loc" "$fru" "$refcode"
+	write_log_seq $rpt_file $recid
+fi
+
+if [ "$rpt_type" = "MENU" -o "$rpt_type" = "SRN_MENU" -o "$rpt_type" = "SRC_MENU" ]; then
+	# Write menugoal
+	#
+	menu_text=$(get_event_non_std_att "$prefix" "$recid" "actions")
+	if [ -z "$menu_text" ]; then
+		remove_event_rec $prefix $recid
+		exit 0
+	fi
+	#
+	# get the menu number in the template, if it is not defined, set it 
+	# to 1000
+	#
+	menu_num=$(get_event_non_std_att "$prefix" "$recid" "servMenu")
+	if [ -z "$menu_num" ]; then
+		menu_num=1000
+	fi
+	write_menu_num $rpt_file $menu_num
+	#
+	# Get menugoal
+	#
+	err_msg=$(get_event_msg "$prefix" "$recid")
+	write_menu_text $rpt_file "$menu_text" "$err_msg"
+	write_log_seq $rpt_file $recid
+fi
+#
+# Remove temporary storage
+#
+# This script create the temp storage - it should remove it
+# when it is done.
+#
+if [ $self_rec_get -eq 1 ]; then
+	end_rec_get $prefix $recid
+fi

@@ -1,0 +1,110 @@
+#!/bin/bash
+# some vpd data for each record
+vpd_ds=""	
+vpd_yl=""
+vpd_fn=""
+vpd_sn=""
+vpd_se=""
+vpd_tm=""
+vpd_ax=""
+vpd_pn=""
+vpd_cc=""
+
+LSVPD=/sbin/lsvpd
+LSVPDOUTPUT=/tmp/vpdout
+
+function begin_lsvpd ()
+{
+	$LSVPD > $LSVPDOUTPUT${1}${2} 
+}
+
+function end_lsvpd ()
+{
+	rm -f $LSVPDOUTPUT${1}${2}
+}
+
+
+function get_dev_vpd()
+{
+	local dev_or_bus=$3
+	local vpdhead
+	local vpddata
+	while read; do
+		_line=$REPLY
+		vpdhead=`echo $_line | cut -d' ' -f1`
+		vpddata=`echo $_line | sed 's/^\*.. //'`
+	 
+		case $vpdhead in
+			*DS) vpd_ds=$vpddata;;
+			*FC) vpd_fc=$vpddata;;
+			*YL) vpd_yl=$vpddata;;
+			*SN) vpd_sn=$vpddata;;
+			*SE) vpd_se=$vpddata;;
+			*TM) vpd_tm=$vpddata;;
+			*AX) vpd_ax=$vpddata;;
+			*FN) vpd_fn=$vpddata;;
+			*PN) vpd_pn=$vpddata;;
+			*CC) vpd_cc=$vpddata;;
+		esac
+		if [ "$vpdhead" == "*FC" ] && [ "$vpd_ax" == "$dev_or_bus" -o "$vpd_yl" == "$dev_or_bus" ]; then
+			return 0
+		fi
+
+	done < $LSVPDOUTPUT${1}${2}
+	return 1;
+}
+
+function get_dev_loc ()
+{
+	if [ -z "$vpd_yl" ]; then
+		echo "n/a"
+	else
+		echo $vpd_yl
+	fi
+}
+
+function get_dev_desc ()
+{
+	echo $vpd_ds
+}
+
+function get_dev_name ()
+{
+	echo $vpd_ax
+}
+
+function get_dev_part_num ()
+{
+	if [ -z "$vpd_pn" ]; then
+		echo "n/a"
+	else
+		echo $vpd_pn
+	fi
+}
+
+function get_dev_fru ()
+{
+	if [ -z "$vpd_fn" ]; then
+		echo "n/a"
+	else
+		echo $vpd_fn
+	fi
+}
+
+function get_dev_serial ()
+{
+	if [ -z "$vpd_sn" ]; then
+		echo "n/a"
+	else
+		echo $vpd_sn
+	fi
+}
+
+function get_dev_ccin ()
+{
+	if [ -z "$vpd_cc" ]; then
+		echo "n/a"
+	else
+		echo $vpd_cc
+	fi
+}

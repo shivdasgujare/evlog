@@ -1,0 +1,530 @@
+/*
+ * Linux Event Logging
+ * Copyright (C) International Business Machines Corp., 2004
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Please send e-mail to kenistoj@users.sourceforge.net if you have
+ *  questions or comments.
+ *
+ *  Project Website:  http://evlog.sourceforge.net/
+ */
+
+/* facility "bcm5700"; */
+/* printk -> kern */
+facility "kern";
+
+event_type "VPD read failed\n";
+eventName = "vpdRead";
+reportType = "SRC";
+servCode = "BF776F00";
+FRU_SRC_Priority = "H";
+File = "drivers/net/bcm/tigon3.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+        "Unable to read the adapter's NVRAM."
+};
+Actions = {
+        "Verify driver software level",
+        "Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "Cannot get MAC addr from NVRAM\n";
+eventName = "cantGetMac";
+reportType = "SRC";
+servCode = "BF776F01";
+FRU_SRC_Priority = "H";
+File = "drivers/net/bcm/tigon3.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+        "Unable to read the adapter's NVRAM."
+};
+Actions = {
+        "Verify driver software level",
+        "Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "Could not create procfs nicinfo directory %s";
+eventName = "procfsDir";
+reportType = "SRC";
+servCode = "BF776500";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57proc.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "Unable to find or create the directory under /proc/net"
+};
+Actions = {
+        "Verify that procfs is supported by the kernel"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string dirname;
+}
+
+printk "%s: unable to alloc new ethernet\n";
+dev_printk "unable to alloc new ethernet\n";
+eventName = "allocNetdev";
+reportType = "SRC";
+servCode = "BF776501";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = PERM;
+ProbableCauses = {
+        "Insufficient kernel memory available for allocation"
+};
+Actions = {
+        "Increase the memory on the system",
+        "Install the driver earlier in system bringup"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string driver;	/*PRINTK_ONLY*/
+}
+
+event_type "System does not support DMA\n";
+eventName = "noDma";
+reportType = "SRC";
+servCode = "BF776502";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+        "The driver was unable to use either 64-bit or 32-bit DMA"
+};
+Actions = {
+        "Verify driver software level"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+event_type "Get Adapter info failed\n";
+eventName = "cantGetAdapterInfo";
+reportType = "SRC";
+servCode = "BF776F02";
+FRU_SRC_Priority = "H";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+        "Unable to read PCI Config space or NVRAM"
+};
+Actions = {
+        "Verify driver software level",
+        "Replace adapter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+}
+
+printk "%s: Jumbo mtu sizes not supported, using mtu=1500\n";
+netdev_printk "Jumbo mtu sizes not supported, using mtu=1500\n";
+eventName = "jumboMtu";
+reportType = "SRC";
+servCode = "BF776A00";
+FRU_SRC_Priority = "H";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+        "This adapter hardware does not support frames sizes over 1500 bytes"
+};
+Actions = {
+        "Verify driver software level",
+        "Replace adapter with one with more capablities"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string dev_name;	/*PRINTK_ONLY*/
+}
+
+printk "%s: Device is configured for Hardware Based Teaming which is not supported with this operating system. Please consult the user diagnostic guide to disable Turbo Teaming.\n";
+netdev_printk "Device is configured for Hardware Based Teaming which is not supported with this operating system. Please consult the user diagnostic guide to disable Turbo Teaming.\n";
+eventName = "hwBasedTeaming";
+reportType = "SRC";
+servCode = "BF776503";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "Linux does not support a hardware feature which has been enabled"
+};
+Actions = {
+        "Execute diagnostics to disable Turbo Teaming"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string dev_name;	/*PRINTK_ONLY*/
+}
+
+event_type "%s: Setting AMD762 Northbridge to enable PCI ordering compliance\n";
+eventName = "northbridgeInit";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = INFO;
+ProbableCauses = {
+        "The Northbridge manufactured by AMD was not properly initialized"
+};
+Actions = {
+        "None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string driver_name;
+}
+
+event_type "%s: Tx hung\n";
+eventName = "txHung";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+        "The driver detected a hung transmit condition and is attempting"
+        " to recover."
+};
+Actions = {
+        "None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: Duplicate entry of the interrupt handler by "
+                           "processor %d.\n";
+eventName = "dupIntr";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = TEMP;
+ProbableCauses = {
+        "An additional CPU attempted to service an interrupt for the same"
+        "adapter that another CPU is currently servicing"
+};
+Actions = {
+        "None"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+        int cpu_number;
+}
+
+event_type "%s: Memory allocation failed - buffer parameters may be set too high\n";
+eventName = "noMem";
+reportType = "SRC";
+servCode = "BF776504";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "Allocation of a block of memory larger than the maximum supported size was attempted"
+};
+Actions = {
+        "Reduce the driver's tx_pkt_desc_cnt parameter",
+        "Reduce the driver's rx_std_desc_cnt parameter",
+        "Reduce the driver's rx_jumbo_desc_cnt parameter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: Invalid line_speed parameter (1000), using 100\n";
+eventName = "badLineSpeed";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "The requested line_speed cannot be used at this time."
+};
+Actions = {
+        "Change the driver's line_speed parameter to 100"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: Invalid full_duplex parameter (0) for fiber, using 1\n";
+eventName = "badFullDuplex";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "A fiber connection only works in full-duplex mode at gigabit speed"
+};
+Actions = {
+        "Change the driver's line_speed parameter to 0, 10, or 100",
+        "Change the driver's full_duplex parameter to 1"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: Invalid auto_speed parameter (0) for copper, using 1\n";
+eventName = "badAutoSpeed";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "A copper connection must use auto_speed selection at gigabit speed"
+};
+Actions = {
+        "Change the driver's line_speed parameter to 0, 10, or 100",
+        "Change the driver's auto_speed parameter to 1"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: Invalid line_speed parameter (%d), using 0\n";
+eventName = "badLineSpeed";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "The specified line_speed parameter is not valid.  "
+        "Must be 0, 10, 100, or 1000"
+};
+Actions = {
+        "Change the driver's line_speed parameter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+        int line_speed;
+}
+
+event_type "%s: adaptive_coalesce not used in NAPI mode\n";
+eventName = "adaptive_coalesceWithNapi";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "Adaptive coalescing of interrupts and NAPI are mutually exclusive"
+};
+Actions = {
+        "Change the driver's adaptive_coalesce parameter to ___"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: Conflicting rx_coalesce_ticks (0) and rx_max_coalesce_frames (0) parameters, using %d and %d respectively\n";
+eventName = "rxCoalesceConflict";
+reportType = "SRC";
+servCode = "BF776505";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "rx_coalesce_ticks and rx_max_coalesce_frames cannot both be zero"
+};
+Actions = {
+        "Change the driver's rx_coalesce_ticks parameter",
+        "Change the driver's rx_max_coalesce_frames parameter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+        int default_ticks;
+        int derault_frames;
+}
+
+event_type "%s: Conflicting tx_coalesce_ticks (0) and tx_max_coalesce_frames (0) parameters, using %d and %d respectively\n";
+eventName = "txCoalesceConflict";
+reportType = "SRC";
+servCode = "BF776506";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "tx_coalesce_ticks and tx_max_coalesce_frames cannot both be zero"
+};
+Actions = {
+        "Change the driver's tx_coalesce_ticks parameter",
+        "Change the driver's tx_max_coalesce_frames parameter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+        int default_ticks;
+        int derault_frames;
+}
+
+event_type "%s: Invalid stats_coalesce_ticks parameter (%u), using 100\n";
+eventName = "statsCoalesce";
+reportType = "SRC";
+servCode = "BF776507";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "The value given to the stats_coalesce_ticks parameter is invalid."
+        "The valid range is 0, or between 100 and 3,600,000,000"
+};
+Actions = {
+        "Change the driver's stats_coalesce_ticks parameter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+        int bad_value;
+}
+
+event_type "%s: Nic Send BDs not available on this NIC or not possible on this system\n";
+eventName = "nicSendBds";
+File = "drivers/net/bcm/b57um.c";
+reportType = "SRC";
+servCode = "BF776800";
+FRU_SRC_Priority = "M";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+       "Either this adapter or the system does not allow the use of"
+       " adapter based transmit descriptors."
+};
+Actions = {
+       "Verify driver software level",
+       "Change nic_tx_bd parameter"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+       string device_name;
+}
+
+event_type "%s: Checksum offload not available on this NIC\n";
+eventName = "noCsumOffload";
+reportType = "SRC";
+servCode = "BF776801";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "This adapter does not support hardware checksum offload."
+};
+Actions = {
+        "Verify driver software level",
+        "Change the driver's rx_checksum parameter to ___",
+        "Change the driver's tx_checksum parameter to ___"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: TSO not available on this NIC\n";
+eventName = "noTso";
+reportType = "SRC";
+servCode = "BF776802";
+FRU_SRC_Priority = "M";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "This adapter does not support hardware TSO."
+};
+Actions = {
+        "Verify driver software level",
+        "Change the driver's enable_tso parameter to ___"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+}
+
+event_type "%s: %s NIC Link is DOWN\n";
+eventName = "linkDown";
+File = "drivers/net/bcm/b57um.c";
+Class = HARDWARE;
+Type = PERM;
+ProbableCauses = {
+        "The physical media connection has been broken."
+};
+Actions = {
+        "Check cable",
+        "Use ifconfig to bring the device down and then up"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string driver_name;
+        string device_name;
+}
+
+event_type "%s: Invalid %s parameter (%u), using %u\n";
+eventName = "badParam";
+File = "drivers/net/bcm/b57um.c";
+Class = SOFTWARE;
+Type = CONFIG;
+ProbableCauses = {
+        "The parameter value is out of range.  The default value is being used"
+};
+Actions = {
+        "Check the value of the indicated parameter",
+        "Modify /etc/modules.conf or /etc/modprobe.conf"
+};
+Threshold = 1;
+Interval = -1;
+attributes {
+        string device_name;
+        string parameter_name;
+        uint bad_value;
+        uint default_value;
+}

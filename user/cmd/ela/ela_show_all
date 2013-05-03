@@ -1,0 +1,10 @@
+#!/bin/bash
+EVLNOTIFY=/sbin/evlnotify
+uid=`id -u`
+if [ $uid != "0" ]; then
+	echo "ERROR: Only root is allowed to use the ela tools"
+	exit 1
+fi
+
+$EVLNOTIFY -S
+

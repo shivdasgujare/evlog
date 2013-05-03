@@ -1,0 +1,66 @@
+gcc's implementation of bit-fields on x86...
+
+Given the bit-field declaration
+	T name:nbits;
+
+T must be an integer type: char, short, int, long, long long, or the unsigned
+	version of one of these types.
+T can be an integer typedef such as wchar_t.
+T can be an enumerated type.
+T cannot be a double, float, or pointer.
+
+nbits cannot exceed bitsof(T).
+nbits cannot be negative.
+
+If name is not omitted, the size of the struct will be at least sizeof(T).
+
+If name is omitted {
+	If this is the only member of the struct {
+		If nbits == 0, the struct has a size of zero.
+		If nbits != 0, the size of struct will be the minimum number
+			of bytes to hold nbits bits.
+	}
+
+	If nbits == 0, pad bits will be inserted as necessary so that
+	the current byte offset from the beginning of the struct* is
+	a multiple of __alignof__(T).  This does NOT necessarily end
+	the current storage unit. (E.g., see bf12.c, bf20.c.  This is a
+	violation of ANSI C.)  Rather, the number of pad bits is added
+	to the number of bits packed into the current storage unit.
+	*[Yes, struct -- not the storage unit.  See bf53.c.]
+}
+
+If nbits > bitsof(int) {
+	The first bitsof(int) bits will be treated as a separate, completed
+	storage unit, aligned to __alignof__(T).  The remaining (nbits
+	- bitsof(int)) bits will serve as the beginning of a new, unaligned
+	storage unit.
+}
+
+Give the bit-field declarations
+	T1 name1:nbits1;
+	T2 name2:nbits2;
+
+T1 and T2 can be different types.
+
+if (nbits2 > bitsof(int) and name2 would cross an __alignof__(long long) boundary {
+	name2 will begin a new storage unit, aligned to __alignof__(long long)
+} else if (nbits1+nbits2) > bitsof(T2) {
+	name2 will begin a new storage unit, aligned as if it were a
+	member of type T2.
+} else {
+	Both name1 and name2 will be packed into the same storage unit.
+}
+The rule is actually more general: it is true if nbits1 is the number of
+bits packed into the current storage unit (which may contain multiple
+bit-fields).
+
+It is legal for both nbits1 and nbits2 to be zero.
+
+A storage unit may have a size that is NOT a power of two.  This makes
+it appear, in some cases, that non-bit-field members can be sucked into
+a previous bit-field's storage unit.
+
+In general, a member of integer, array (!), or struct (!) type T1 that
+is not a bit-field may be treated as a bit-field if it is followed by
+a bit-field of type T2, and sizeof(T2) > sizeof(T1).

@@ -1,0 +1,34 @@
+#!/bin/bash
+
+ELA_SCRIPTS_DIR=/usr/share/evlog
+#
+# commands
+#
+ELA_CONSOLE=$ELA_SCRIPTS_DIR/ela_console
+ELA_CRT_RPT=$ELA_SCRIPTS_DIR/ela_crt_rpt
+ELA_SIG=$ELA_SCRIPTS_DIR/ela_sig
+DIAG_SERVICE_EVENT=/usr/sbin/diagServiceEvent
+
+. $ELA_SCRIPTS_DIR/ela_funcs
+recid=$1
+
+#
+# Write to console
+#
+$ELA_CONSOLE $recid
+
+#
+# Create ela_report
+#
+$ELA_CRT_RPT $recid
+#
+# Invoke diagEventService
+#
+if [ -e $DIAG_SERVICE_EVENT ]; then 
+	$DIAG_SERVICE_EVENT $recid $ELA_REPORT_DIR
+#	echo "$?:report dir  $ELA_REPORT_DIR" > /tmp/debug
+fi
+#
+# Notify CIM indication provider that IO error happens
+#
+$ELA_SIG $recid "io"

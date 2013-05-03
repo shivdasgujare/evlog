@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+
+LD_SO_PRELOAD=/etc/ld.so.preload
+TEMP_FILE=/etc/ld.so.preload.$$
+LIB_EXIST=""
+PRELOAD_LIB=/lib/libevlsyslog.so.1
+
+if [ "$1" = "-r" ]
+then
+
+	#
+	# -r option : remove preload lib
+	#
+	cat $LD_SO_PRELOAD | grep -v $PRELOAD_LIB >  $TEMP_FILE
+	cp $TEMP_FILE $LD_SO_PRELOAD
+else
+	if [ -e $PRELOAD_LIB ]
+	then 
+		if [ -e $LD_SO_PRELOAD ]
+		then
+			LIB_EXIST=`cat $LD_SO_PRELOAD | grep $PRELOAD_LIB`
+			if [ -z $LIB_EXIST ] 
+			then
+				echo "$PRELOAD_LIB was added in $LD_SO_PRELOAD"
+				echo $PRELOAD_LIB >> $LD_SO_PRELOAD
+			else
+				echo "$PRELOAD_LIB already exists in the $LD_SO_PRELOAD, skip."
+			fi
+
+		else
+			echo $PRELOAD_LIB > $LD_SO_PRELOAD
+		fi
+	else
+		echo "$PRELOAD_LIB does not exist!"
+	fi
+fi
+

@@ -1,0 +1,11 @@
+--add 'echo "test1  started recid=" %recid% >> test7.out' --filter 'data contains "start test1"' --persistent
+--add 'echo "test2  started recid=" %recid% >> test7.out' --filter 'data contains "start test2"' --persistent
+--add 'echo "test3  started recid=" %recid% >> test7.out' --filter 'data contains "start test3"' --persistent
+--add 'echo "test4  started recid=" %recid% >> test7.out' --filter 'data contains "start test4"' --persistent
+--add 'echo "test5  started recid=" %recid% >> test7.out' --filter 'data contains "start test5"' --persistent
+--add 'echo "test6  started recid=" %recid% >> test7.out' --filter 'data contains "start test6"' --persistent
+--add 'echo "test7  started recid=" %recid% >> test7.out' --filter 'data contains "start test7"' --persistent
+--add 'echo "test8  started recid=" %recid% >> test7.out' --filter 'data contains "start test8"' --persistent
+--add 'echo "test9  started recid=" %recid% >> test7.out' --filter 'data contains "start test9"' --persistent
+--add 'echo "test0  started recid=" %recid% >> test7.out' --filter 'data contains "start test0"' --persistent
+

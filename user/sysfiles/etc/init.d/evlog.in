@@ -1,0 +1,107 @@
+#!/bin/bash
+#
+# chkconfig: 35 09 90
+# description: Enterprise event log daemon
+#
+#
+
+# Source function library.
+
+REDHAT=`cat /proc/version | grep "Red Hat"`
+# Source function library.
+if [ ! -z "$REDHAT" ]
+then
+	. /etc/init.d/functions
+fi
+
+
+[ -f /sbin/evlogd ] || exit 0
+
+EVLOGD_OPTIONS=""
+# Source config
+if [ -f /etc/sysconfig/evlog ]; then
+	. /etc/sysconfig/evlog
+fi
+
+RETVAL=0
+
+umask 077
+
+record_last_recid() {
+	/sbin/evlview -l $1 -t 1 -S %recid% > $2 2> /dev/null
+	test -s $2 || echo 0 > $2
+	chmod 644 $2
+}
+
+start() {
+ 	echo -n $"Starting enterprise event logger: "
+
+	record_last_recid @localstatedir@/eventlog @localstatedir@/bootrecid
+	record_last_recid @localstatedir@/privatelog @localstatedir@/pbootrecid
+ 	
+ 	if [ ! -z "$REDHAT" ]
+	then 	
+		daemon /sbin/evlogd $EVLOGD_OPTIONS
+	else
+		/sbin/evlogd $EVLOGD_OPTIONS
+	fi
+	sleep 1
+	RETVAL=$?
+	echo
+	touch /var/lock/subsys/evlog
+	return $RETVAL
+}	
+stop() {
+	echo -n $"Shutting down enterprise event logger: "
+	
+	if [ ! -z "$REDHAT" ]
+	then
+		killproc evlogd
+	else
+		PID=`ps -ef | grep evlogd | grep -v grep | awk '$3==1 {print $2}'`
+		if [ ! -z "$PID" ]
+		then
+			kill -s SIGTERM $PID
+		fi
+	fi
+
+	RETVAL=$?
+	echo
+	rm -f /var/lock/subsys/evlog
+	if [ -e /var/run/evlogd.pid ]
+	then
+		rm -f /var/run/evlogd.pid
+	fi
+	return $RETVAL
+}
+rhstatus() {
+	status evlogd
+}
+restart() {
+	stop
+	start
+}	
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+  	rhstatus
+	;;
+  restart|reload)
+  	restart
+	;;
+  condrestart)
+    restart	
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+	exit 1
+esac
+
+exit $?
+

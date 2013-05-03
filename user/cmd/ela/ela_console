@@ -1,0 +1,154 @@
+#!/bin/bash
+prefix=ela
+self_rec_get=0
+
+OUTPUT=/dev/console
+ELA_SCRIPTS_DIR=/usr/share/evlog
+
+. $ELA_SCRIPTS_DIR/ela_funcs
+. $ELA_SCRIPTS_DIR/ela_vpd_funcs
+
+FACILITY=""
+EVENT_TYPE=""
+SEVERITY=""
+CAUSES=""
+ACTIONS=""
+
+echo $ACTIONS $CAUSES > /dev/null
+
+. $ELA_SCRIPTS_DIR/ela_funcs
+recid=${1}
+
+#
+# If temporary storage is not created then create it
+#
+# begin_rec_get - Capture the event record with this recid and 
+# put it in our temporary storage - Subsequent get_* will work
+# of this temporary storage.
+#  
+did_get_rec $prefix $recid
+ret=$?
+if [ $ret -eq "0" ]; then
+	echo "did_get_rec returns $ret"
+	echo "console create temp"
+	begin_rec_get $prefix $recid
+	if [ $? -eq "1" ]; then
+		echo "Error: can't find event record with recid=${recid}"
+		exit 1
+	fi
+	self_rec_get=1
+fi
+
+datetime=$(get_datetime "$prefix" "$recid")
+echo $datetime > $OUTPUT
+rpt_type=$(get_event_non_std_att "$prefix" "$recid" "reportType")
+#
+# Get the error message
+#
+EVENT_MSG=$(get_event_msg "$prefix" "$recid")
+
+if [ "$rpt_type" = "SRC" -o "$rpt_type" = "SRC_MENU" ]; then
+	code=$(get_event_non_std_att "$prefix" "$recid" "servCode")
+	echo "Automatic Error Log Analysis has detected a problem." >> $OUTPUT
+	echo "The System Reference Code is:" >> $OUTPUT
+	echo "${code}: ${EVENT_MSG}" >> $OUTPUT
+elif [ "$rpt_type" = "SRN" -o "$rpt_type" = "SRN_MENU" ]; then
+	code=$(get_event_non_std_att "$prefix" "$recid" "servCode")
+	echo "Automatic Error Log Analysis has detected a problem." >> $OUTPUT
+	echo "The Service Request Number is:" >> $OUTPUT
+	echo "${code}: ${EVENT_MSG}" >> $OUTPUT
+else   
+	echo "Automatic Error Log Analysis has detected a problem." >> $OUTPUT
+	echo "${EVENT_MSG}" >> $OUTPUT
+fi  
+#
+# Get the event facility - Facility will be stored in FACILITY var  
+#
+FACILITY=$(get_facility "$prefix" "$recid") 
+
+#
+# Get the event type -
+#
+EVENT_TYPE=$(get_event_type "$prefix" "$recid")
+#
+# Get the severity
+#
+SEVERITY=$(get_severity "$prefix" "$recid")
+echo "recid=${recid} facilty=${FACILITY} event_type=${EVENT_TYPE} severity=${SEVERITY}" >> $OUTPUT
+
+#
+# get FRU
+if [ -e /sbin/lsvpd ]; then
+	begin_lsvpd $prefix $recid
+	bus_id=$(get_event_non_std_att "$prefix" "$recid" "bus_id")
+
+	if [ -z "$bus_id" ]; then
+	# There is no bus id information, try to get the dev_name
+		get_fru="no"
+		dev_name=$(get_event_non_std_att "$prefix" "$recid" "dev_name")
+		if [ -z "$dev_name" ]; then
+		# there is no dev_name either, quit getting fru now
+			loc="n/a"
+			fru="n/a"
+		else
+			get_dev_vpd "$prefix" "$recid" "$dev_name"
+			loc=$(get_dev_loc)
+			fru=$(get_dev_fru)
+			if [ -z "$fru" ]; then
+				fru="n/a"
+			fi
+		fi
+	else
+		loc=$bus_id
+		get_dev_vpd "$prefix" "$recid" "$bus_id"
+		fru=$(get_dev_fru)
+		if [ -z "$fru" ]; then
+			fru="n/a"
+		fi
+	fi
+	end_lsvpd $prefix $recid
+
+
+	if [ "$loc" != "n/a" ]; then
+		bus_id=`echo $loc | cut -d':' -f2`
+		dev_id=`echo $loc | cut -d':' -f3 | cut -d'.' -f1`
+		func_id=`echo $loc | cut -d'.' -f2`
+
+		echo "Bus:${bus_id} device:${dev_id} function:${func_id}" >> $OUTPUT
+		echo "FRU: ${fru}" >> $OUTPUT
+	fi
+else 
+	bus_id="n/a"
+	dev_id="n/a"
+	func_id="n/a"
+	fru="n/a"
+
+	echo "Bus:${bus_id} device:${dev_id} function:${func_id}" >> $OUTPUT
+	echo "FRU: ${fru}" >> $OUTPUT
+fi
+
+
+CAUSES=$(get_event_non_std_att "$prefix" "$recid" "probableCauses")
+if [ ! -z "${CAUSES}" ]; then
+	echo "Probable cause:" >> $OUTPUT
+	echo -e "${CAUSES}" | awk '{print "\t" $0}' >> $OUTPUT
+fi
+	
+ACTIONS=$(get_event_non_std_att "$prefix" "$recid" "actions")
+
+if [ ! -z "${ACTIONS}" ]; then
+	echo "Recommend actions:" >> $OUTPUT
+	echo -e "${ACTIONS}" | awk '{print "\t" $0}' >> $OUTPUT
+fi
+
+#
+# Remove temporary storage
+#
+# This script create the temp storage - it should remove it
+# when it is done.
+#
+if [ $self_rec_get -eq 1 ]; then
+	end_rec_get $prefix $recid
+fi
+
+

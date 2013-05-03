@@ -1,0 +1,146 @@
+.TH "EVLGENTMPLS" "1" "18 December 2002" "" ""
+.SH NAME
+evlgentmpls \- generate formatting templates for event-logging calls
+.SH SYNOPSIS
+\fBevlgentmpls\fR [\fB-v\fR \fIversion\fR] \fIdirectory\fR \fIobject-file\fR ...
+.SH "DESCRIPTION"
+For each
+.IR object-file ,
+.B evlgentmpls
+reads the .log section (if any)
+and generates a template specification for each
+event-logging call described therein.
+.PP
+All template specifications for the facility
+whose canonical name is
+.I facname
+are appended to
+\fIdirectory\fP/\fIfacname\fP/\fIfacname\fP.t.
+.IR directory ,
+\fIdirectory\fP/\fIfacname\fP,
+and
+.IR facname .t
+are all created if they do not already exist.
+Multiple
+.IR object-file s
+can yield template specifications for the same facility.
+Each
+.IR facname .t
+file can be compiled using
+.BR evltc .
+.PP
+A canonical facility name is created by
+converting uppercase ASCII letters to lowercase,
+spaces to underscores,
+and all other ASCII punctuation characters to periods.
+.PP
+.I object-file
+may be relocatable (.o),
+executable (a.out),
+or a library (.a or .so).
+.PP
+When you compile a C file containing calls to
+.IR syslogat (),
+information about each call is recorded in the .log section
+of the resulting object file.
+This information includes the names of the source file and
+calling function, plus the
+.IR syslogat ()
+format string
+(which may specify attribute names for the values logged).
+You can then use
+.B evlgentmpls
+to create the template source file(s) corresponding to those calls,
+and
+.B evltc
+to compile the template source file(s).
+Once you have installed the resulting .to files
+(typically in
+.IR @localstatedir@/templates ),
+.B evlview
+and other libevl-based programs can use those templates
+when examining events logged by your program.
+.PP
+.B evlgentmpls
+can also be applied to kernel object files \(em
+for example, files that contain calls to the proposed
+.IR printkat ()
+macro.
+.PP
+To strip the .log section out of an object file
+after you have run
+.BR evlgentmpls ,
+use "objcopy -R .log \fIobjfile\fP".
+.SH "OPTIONS"
+.TP
+\fB-v\fR \fIversion\fR
+Specifies which version of the template-generation scheme you're using.
+In version 1 (the default), the event type is computed from the checksums
+of the format string, source file name, and calling function.
+(\fIsyslogat\fR() uses this scheme.)
+In version 2, the event type is computed from the normalized version
+of the format string.
+(This is the scheme used when the kernel code leaves computation of the
+event type to
+.B evlogd .)
+.SH "EXAMPLE"
+Suppose
+.I raidmon.c
+contains the following lines:
+.PP
+.nf
+#define EVL_FACILITY_NAME raidmon
+	...
+syslogat(LOG_ERR,
+	"Fan #{fan}%d has been shut down; {ngoodfans}%d fans remaining.\\n",
+	badfan->id, ngoodfans);
+.fi
+.PP
+When you compile
+.IR raidmon.c ,
+information about the
+.IR syslogat ()
+call is stored in the .log section of
+.IR raidmon.o .
+The command
+.PP
+.nf
+# evlgentmpls @localstatedir@/templates raidmon.o
+.fi
+.PP
+(run as root, so it can write to
+.IR @localstatedir@/templates )
+creates the directory
+.I @localstatedir@/templates/raidmon
+and the template source file
+.I raidmon.t
+in that directory.
+.I raidmon.t
+contains a template specification for each
+.IR syslogat ()
+call in
+.IR raidmon.o .
+.PP
+The command
+.PP
+.nf
+# evltc @localstatedir@/templates/raidmon/raidmon.t
+.fi
+.PP
+compiles
+.I raidmon.t
+and generates a binary template (.to file) for each
+.IR syslogat ()
+call.
+.PP
+With these templates in place, a command such as
+.PP
+.nf
+$ evlview -b -f 'ngoodfans < 3'
+.fi
+.PP
+can be used to find records such as the one logged by the aforementioned
+.IR syslogat ()
+call.
+.SH "SEE ALSO"
+evltc(1), evlview(1)

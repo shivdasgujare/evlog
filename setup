@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# Install evlog initscripts.
+
+ConfigureLinux() {
+	if [ -f /etc/debian-version -a -s /etc/UnitedLinux-release ]; then
+		DISTROS="Debian"
+		INITDOTD_DIR=${DESTDIR}/etc/init.d
+		RCDOTD_BASE= ${DESTDIR}/etc
+		REL_INITDOTD_DIR="../init.d"
+	elif [ -f /etc/SuSE-release -a -s /etc/SuSE-release ]; then
+		DISTROS="SuSE"
+		INITDOTD_DIR=${DESTDIR}/etc/init.d
+		RCDOTD_BASE=${DESTDIR}/etc/rc.d
+		REL_INITDOTD_DIR=../../init.d
+	elif [ -f /etc/redhat-release -a -s /etc/redhat-release ]; then
+		DISTROS="RedHat"
+		INITDOTD_DIR=${DESTDIR}/etc/init.d
+		RCDOTD_BASE=${DESTDIR}/etc/rc.d
+		REL_INITDOTD_DIR="../../init.d"
+	else
+		DISTROS="Generic"
+		INITDOTD_DIR=${DESTDIR}/etc/init.d
+		RCDOTD_BASE=${DESTDIR}/etc/rc.d
+		REL_INITDOTD_DIR=../../init.d
+	fi
+}
+
+install_links() {
+	ConfigureLinux
+	ln -fs ${REL_INITDOTD_DIR}/evlog ${RCDOTD_BASE}/rc3.d/S09evlog
+	ln -fs ${REL_INITDOTD_DIR}/evlog ${RCDOTD_BASE}/rc5.d/S09evlog
+	ln -fs ${REL_INITDOTD_DIR}/evlog ${RCDOTD_BASE}/rc0.d/K90evlog
+	ln -fs ${REL_INITDOTD_DIR}/evlog ${RCDOTD_BASE}/rc6.d/K90evlog
+	
+	ln -fs ${REL_INITDOTD_DIR}/evlogrmt ${RCDOTD_BASE}/rc3.d/S89evlogrmt
+	ln -fs ${REL_INITDOTD_DIR}/evlogrmt ${RCDOTD_BASE}/rc5.d/S89evlogrmt
+	ln -fs ${REL_INITDOTD_DIR}/evlogrmt ${RCDOTD_BASE}/rc0.d/K60evlogrmt
+	ln -fs ${REL_INITDOTD_DIR}/evlogrmt ${RCDOTD_BASE}/rc6.d/K60evlogrmt
+	
+	# Remove previous version (1.5.3 and earlier) links if exist
+	test ! -L ${RCDOTD_BASE}/rc3.d/S80evlnotify || rm -f ${RCDOTD_BASE}/rc3.d/S80evlnotify
+	test ! -L ${RCDOTD_BASE}/rc5.d/S80evlnotify || rm -f ${RCDOTD_BASE}/rc5.d/S80evlnotify
+	ln -fs ${REL_INITDOTD_DIR}/evlnotify ${RCDOTD_BASE}/rc3.d/S07evlnotify
+	ln -fs ${REL_INITDOTD_DIR}/evlnotify ${RCDOTD_BASE}/rc5.d/S07evlnotify
+	ln -fs ${REL_INITDOTD_DIR}/evlnotify ${RCDOTD_BASE}/rc0.d/K50evlnotify
+	ln -fs ${REL_INITDOTD_DIR}/evlnotify ${RCDOTD_BASE}/rc6.d/K50evlnotify
+	
+	# Remove previous version (1.5.3 and earlier) links if exist
+	test ! -L ${RCDOTD_BASE}/rc3.d/S90evlaction || rm -f ${RCDOTD_BASE}/rc3.d/S90evlaction
+	test ! -L ${RCDOTD_BASE}/rc5.d/S90evlaction || rm -f ${RCDOTD_BASE}/rc5.d/S90evlaction
+	ln -fs ${REL_INITDOTD_DIR}/evlaction ${RCDOTD_BASE}/rc3.d/S08evlaction
+	ln -fs ${REL_INITDOTD_DIR}/evlaction ${RCDOTD_BASE}/rc5.d/S08evlaction
+	ln -fs ${REL_INITDOTD_DIR}/evlaction ${RCDOTD_BASE}/rc0.d/K40evlaction
+	ln -fs ${REL_INITDOTD_DIR}/evlaction ${RCDOTD_BASE}/rc6.d/K40evlaction
+}
+
+startall()
+{
+	ConfigureLinux
+	${INITDOTD_DIR}/evlnotify start
+	${INITDOTD_DIR}/evlaction start
+	sleep 1
+	${INITDOTD_DIR}/evlog start
+	sleep 1
+	${INITDOTD_DIR}/evlogrmt start
+}
+
+stopall()
+{
+	PID=`ps -ef | grep evlogd | grep -v grep | awk '$3==1 {print $2}'`
+	PID1=`ps -ef | grep evlogrmtd | grep -v grep | awk '{print $2}'`
+	PID2=`ps -ef | grep evlnotifyd | grep -v grep | awk '{print $2}'`
+	PID3=`ps -ef | grep evlactiond | grep -v grep | awk '{print $2}'`
+	test -z ${PID1} || kill -s SIGTERM ${PID1}
+	sleep 1
+	test -z ${PID} || kill -s SIGTERM ${PID}
+	sleep 1
+	test -z ${PID3} || kill -s SIGTERM ${PID3}
+	sleep 1
+	test -z ${PID2} || kill -s SIGTERM ${PID2}
+	sleep 1
+}
+
+DESTDIR=""
+DISTROS=""
+
+case "$1" in
+	startall)
+		startall
+		;;
+	stopall)
+		stopall
+		;;
+	links)
+		install_links
+		;;
+	*)
+		echo "Usage: `basename $0` {install-links|startall|stopall}"
+		exit 1
+esac
+
+exit 0

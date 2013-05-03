@@ -1,0 +1,791 @@
+
+For problems or questions, please e-mail nguyhien@users.sourceforge.net
+For bugs, please submit a bug via the project page:
+
+https://sourceforge.net/projects/evlog/
+
+
+Contents:
+=========
+
+1.  Installation Notes and Prerequisites
+2.  Build and Install Kernel patch 
+3.  Install and configure User-space Event Logging 
+    a.  Local Logging
+    b. 	Configuring evlogmgr to run as a cron job
+    c.  Remote event consolidator
+    d.  Forwarding events to remote event consolidator
+        using plug-ins. 
+    e.  Forwarding syslog messages to the event log
+4.  Verify logging from Kernel-space 
+5.  Verify logging from User-space, notification, templates, etc.
+6.  Verify remote event forwarding
+7.  Verify ELA
+
+=======================================
+1. Installation Notes and Prerequisites 
+=======================================
+
+It strongly recommended that you read through these notes prior to
+installing or upgrading event logging.
+
+1. Some Distros put their startup scripts in /etc/rc.d/init.d
+   (for example Red Hat), and some put them in /etc/init.d.
+   This may present a problem if you are using evlog RPMs.
+   evlog-1.6.1 handles both cases propertly.  However, if you are
+   upgrading from a pre-1.5.x version of event logging to 1.6.1
+   using "rpm -U", the startup scripts may get deleted during the
+   upgrade process.  Removing the old version (pre-1.5.x) of the 
+   evlog RPM (with "rpm -e") first, and then installing evlog-1.6.1
+   RPM with "rpm -i", should avoid this problem.
+
+2. Some new options have been added to the evlogd daemon.  None of
+   these options are used in the default event logging installation,
+   but you may wish to modify your startup scripts to use them.
+
+   evlogd options
+
+   -x  disable kernel address resolution.  
+       Addresses specified as [<aaaaaaaa>] in POSIX_LOG_STRING format
+       event records will be resolved via symbol lookup in System.map.
+       This option disables this feature.
+ 
+   -k  <system-map>  Specifies alternate System.map location for 
+       kernel address resolution.
+
+   -u  do not log locally.  Would typically be used if you are 
+       forwarding events to some other host.
+
+   -p  Paranoid.  evlogd will reread the module symbols before it needs
+       to lookup the module symbol table.
+     ->  * Not suggested for highly loaded systems. *
+
+   -2  2 events are logged for every one with address [<aaaaaaaa>] -- 
+       one with symbol resolved, one without
+     ->  * Not recommended except for specific cases, since duplicate 
+           events can be very confusing *
+
+3. If you are attempting to build RPMs on a system running Red Hat 8.0,
+   note that the "rpm -ba" option, which the evlog build scripts use,
+   is not supported in RH 8's version of RPM.  The RH 8 rpm man page
+   describes how to work around this.  
+
+4. Different padding observed between gcc v2.96 and gcc v3.2 for struct
+   that contains "long long" bitfield type.
+
+   For example
+
+   struct bf {
+          char            c1:8;
+          char            c2:8;
+          short           s1:16;
+          long long       ll:64;
+          int             i:16;
+   };
+
+   When compiled with gcc v2.96 the size of bf struct is 24 bytes (8 bytes
+   boundary padding).
+
+   When compiled with gcc v3.02, the size of bf struct is 16 bytes (4 bytes
+   boundary padding).
+
+   Due to the different versions of gcc that are in use, the bitfield
+   tests in the test scripts have been disabled.
+  
+
+
+5. Observed on ia64 only...
+
+   For an event logging plugin, every time the registered function is
+   called, the following error is displayed...
+
+	/sbin/evlogd: relocation error: /usr/lib/libevl.so.1:
+	undefined symbol: __umodsi3
+   
+   or
+ 
+       ./evlogd: relocation error: /usr/lib/libevl.so.1: undefined symbol:
+       __moddi3
+ 
+   To overcome this problem, you need to modify the libevl Makefile under
+   evlog/user/lib/Makefile to link with the libgcc_s.so.  For example,..
+  
+libevl.so: $(DOTSOS) query/made template/made util/made
+    rm -f libevl.so
+    ld -share -soname libevl.so.1 -o libevl.so $(LIB_SO) -lc \
+       -L/home/janis/gnu/tools/gcc-mainline/lib -lgcc_s
+
+
+
+Prerequisites
+=============
+
+1. Event Logging software:
+   i.  Patch for the Linux kernel v2.4.x, v2.6.x:
+         evlog-2.6.x.patch  
+         dev_evlog-2.6.x.patdh
+
+  Note:  These patches are available under the 1.4.2 package. 	
+
+   ii. Tarball:
+           evlog-1.6.1.tar.gz
+
+  iii. Binary RPMs:
+ 	   evlog-1.6.1-1.i386.rpm
+	   tcp_rmtlog_be-1.6.1-1.i386.rpm
+           udp_rmtlog_be-1.6.1-1.i385.rpm
+ 		   		 		
+
+2. Linux kernel version 2.6.x  -
+
+   linux-2.6.x.tar.gz
+   ...can be downloaded from:
+	ftp.kernel.org/pub/linux/kernel/ 
+
+
+=================================
+2. Build and Install Kernel patch 
+=================================
+
+
+1. mkdir $HOME/tmp 
+
+2. Download Linux kernel, linux-2.6.x.tar.gz to $HOME/tmp/
+   (from ftp.kernel.org/pub/linux/kernel/v2.6)
+
+3. Untar Linux source 
+
+    tar -xzvf  linux-2.6.x-tar.gz
+
+   
+4. cd $HOME/tmp/linux-2.6x 
+   
+5. Download the evlog-2.6.x.patch.
+
+6. Issue command to patch kernel
+     patch -p01 -b < evlog-2.6.x.patch
+   
+7. Build kernel (the following instructions are for i386):
+    a. make xconfig
+    b. Under "General Setup", select the following:
+       i. Select "y" for "Enterprise event logging support".
+      ii. Check 'y' for "Forward printk messages to enterprise 
+	     event log" if you want this feature. 
+     iii. Configure other kernel config settings as needed. 
+    c. Save and Exit
+    d. make dep
+    e. make clean
+    f. make bzImage
+    g. make modules
+    h. As root, make modules_install
+	
+8. cp arch/xxxx/boot/bzImage /boot/vmlinuz-2.6.x-evl
+    where xxxx is the architecture you are building for (for example i386)
+
+9. cp System.map /boot/System.map-2.6.x
+
+10. rm /boot/System.map 
+
+11. Modify your configuration to boot from /boot/vmlinuz-2.6.x-evl
+
+    For example, if using LILO...
+	
+    - Modify /etc/lilo.conf
+
+    - Run /sbin/lilo to read modified lilo.conf
+
+12. reboot
+
+
+=================================================
+3. Install and configure User-space Event Logging 
+=================================================
+
+a. Local Logging
+================
+
+This procedure installs event logging and starts up daemons for
+logging to the local log files.
+
+Using .rpm
+==========
+
+1. Log in as root
+
+2. Download evlog-1.6.1-1.i386.rpm, or for other platforms,
+   create an .rpm with the buildrpm.sh script (see details under
+   "Prerequisites" above).
+
+   If you plan to use the evlgentmpl utility, you must also 
+   execute the bld_evlgentmpls.sh script even if  you are working
+   with i386.  (see details under "Prerequisites" above)  
+
+3. Issue the following commands:
+
+    rpm -i evlog-1.6.1-1.i386.rpm  (for i386, for example)
+    rpm -i evlgentmpls-1.6.1-1.i386.rpm (for i386, for example)
+	
+NOTE: It may be necessary to use the --force option depending 
+upon which Linux distribution you are using.
+
+When install is successful, you will see the following messages:
+Your kernel has been patched with evlog kernel patch. 
+make[1]: Entering directory `/var/evlog/templates/logmgmt'
+/sbin/evltc logmgmt.t
+make[1]: Leaving directory `/var/evlog/templates/logmgmt'
+Starting enterprise event logger: [  OK  ]
+Starting enterprise event log notification: [  OK  ]
+Starting notification action daemon: [  OK  ]
+ 
+
+Using tarball
+=============
+
+1. Log in as root
+
+2. Download evlog-1.6.1.tar.gz
+
+3. Untar the tarball
+
+     tar -xzvf evlog-1.6.1.tar.gz
+
+4. cd to evlog-1.6.1
+
+5. Do the following:
+      ./autogen.sh
+      ./configure
+      make
+      make install
+      make startall
+
+     to build rpm do the following:
+
+      make rpm
+      make rpm-tcp
+      make rpm-udp
+
+
+When install is successful, you will see messages like these...
+/etc/rc.d/init.d/evlog start
+Starting enterprise event logger:                          [  OK  ]
+sleep 1
+/etc/init.d/evlogrmt start
+Starting remote event logger:                              [  OK  ]
+sleep 1
+/etc/rc.d/init.d/evlnotify start
+Starting enterprise event log notification:                [  OK  ]
+sleep 1
+/etc/rc.d/init.d/evlaction start
+Starting notification action daemon:                       [  OK  ]
+
+
+b. Configuring evlogmgr to run as a cron job
+============================================
+
+During installation the file evlogmgr.cron is placed in the
+/etc/cron.d directory.  This file contains the following:
+
+   # Daily at 2 AM remove recds older than 30 days
+   0 2 * * * root /sbin/evlogmgr -c 'age > "30d"'
+
+   # Daily at 1 AM remove recds w/ sev=DEBUG
+   0 1 * * * root /sbin/evlogmgr -c "severity=DEBUG"
+
+and schedules the evlogmgr command to perform the described
+actions.  If you do not want the default log management actions
+to take place in your system, either modify this or delete this file.
+See the evlogmgr man page for more details.
+
+
+
+c. Remote event consolidator
+============================
+
+This procedure configures the evlogrmtd daemon to accept events
+from other hosts on the network so that events from multiple hosts
+can be consolidated into a single log file.  If you are not setting
+up your system to function as an event consolidator, then skip this
+procedure.
+ 
+Prerequisite:  The local logging software must be installed.
+
+1. Log in as root
+
+2. Edit /etc/evlog.d/evlhosts to add an entry for each host that
+   you want the evlogrmtd to accept events from.  Each entry must
+   specify host name, either simple name or fqdn, and also a unique
+   identifier for each host.  This identifier can be up to 2 bytes,
+   but cannot be equal to 0 (it will be ignored).
+
+   The following are all valid entries:
+
+    (identifier)  (hostname)
+
+       1          mylinuxbox                     
+     120.115      mylinuxbox2.foo.bar.com     
+     0xabcd       yourlinuxbox                 
+ 
+   Note that identifier is always specified first, followed by one
+   or more spaces, followed by the hostname.  
+
+3. Copy /etc/evlog.d/evlogrmtd.conf.sample to
+   /etc/evlog.d/evlogrmtd.conf and edit it. By default, it contains
+   the following:
+
+     Password=password
+     TCPPort=12000
+     UDPPort=34000
+
+     "Password" is used only by TCP clients to authenticate remote hosts
+     when attempting to connect.  If all remote hosts are using UDP, then
+     Password is ignored.
+
+     "TCPPort" must match the TCP port used by remote hosts for sending events
+     to the event consolidator.
+
+     "UDPPort" must match the UDP port used by remote hosts for sending events
+     to the event consolidator.
+   
+   Modify password and port numbers as desired, keeping in mind that port 
+   numbers must match the ones configured on the hosts that will be
+   forwarding events to the event consolidator.
+
+   Note that the evlogrmtd is capable of accepting events simultaneously from 
+   different hosts using both UDP and TCP; however, currently all of the 
+   hosts must be the same architecture.   
+
+4. Restart the evlog subsystem:
+
+       /etc/init.d/evlog restart      
+
+   If evlogrmtd cannot resolve any of the hosts listed in evlhosts, or
+   there are no entries in /etc/evlog.d/evlhosts, then the evlogmrtd
+   will exit. 
+
+  
+d. Forwarding events to remote event consolidator using plug-ins 
+================================================================
+
+This procedure installs and configures an event logging plug-in
+for forwarding events to a remote event consolidator.  If you are
+not setting up your system to forward events, then skip this 
+procedure.
+
+Prerequisite:  The local logging software must be installed.
+
+Installation using .rpm
+=======================
+
+1. Log in as root.
+
+2. Download udp_rmtlog_be-1.6.1-1.i386.rpm; or,
+   download tcp_rmtlog_be-1.6.1-1.i386.rpm; or,
+   for other platforms,  create an .rpm with the appropriate 
+   build script (see details under "Prerequisites" above).
+
+3. Issue the following command (shown for i386 rpm):
+
+   if you want to forward events using UDP...
+
+       rpm -i udp_rmtlog_be-1.6.1-1.i386.rpm
+
+   If you want to forward events using TCP...
+    
+       rpm -i tcp_rmtlog_be-1.6.1-1.i386.rpm
+ 
+4. Go to "Configuration and Startup" below, and continue.  
+
+
+Installation using tarball
+==========================
+
+1. Log in as root.
+
+2. cd user/cmd/evlogd/tcp_rmtlog_be if you want to use TCP.
+   cd user/cmd/evlogd/udp_rmtlog_be if you want to use UDP.
+
+3. Now do the following:
+
+     make 
+     make install	 
+
+4. Go to "Configuration and Startup" below, and continue.
+
+
+Configuration and Startup
+=========================
+
+1. cd to /etc/evlog.d
+
+2. If you are using UDP, then edit udp_rmtlog_be.conf to specify...
+   
+     IP address, or hostname, for the event consolidator
+     Port number - should match the port number used by the event 
+       consolidator
+     Disable=no to send events using UDP
+
+   If you are using TCP, then edit tcp_rmtlog_be.conf to specify...
+    
+     IP address, or hostname, for the event consolidator
+     Port number - should match the port number used by the event
+       consolidator
+     Disable=no to send events using TCP
+     Password - must match password expected by the event consolidator
+       when the TCP connection is attempted.
+     BufferLenInKbytes -Specifies the size of the memory buffer for 
+       events being transmitted via TCP.  This reduces the chances of
+       losing events during temporary loss of connection.  
+       Default size=128.  Recommended range = 32 to 1024.  
+   
+   Note:  For TCP, the IP address or hostname must 
+         be resolved back to the hostname or IP address, respectively,
+         or added to the /etc/hosts file.  Otherwise, the plugin will
+         be unable to connect to the remote event consolidator.
+
+
+3. Restart the evlogd daemon to load the plugin...
+
+      /etc/init.d/evlog restart  
+
+   If you do not want events to be logged to the local log files, 
+   /var/evlog/eventlog and /var/evlog/privatelog, then do the 
+   following...
+
+   (1)  Edit /etc/init.d/evlog...
+        
+         under "start(), add "-u" after /sbin/evlogd 
+  
+   (2)   /etc/init.d/evlog restart
+ 
+   You may also want to delete start-up scripts under rc.d for
+   evlnotify, evlaction, and evlogrmt since they are only useful if
+   you are logging locally.  Also, you may want to delete
+   /etc/cron.d/evlogmgr.cron.
+
+4. If this is the first host you've configured to transmit
+   events, it will be necessary to restart the evlogrmtd
+   daemon on the event consolidator host as follows:
+
+       /etc/init.d/evlog start
+
+
+e.  Forwarding syslog messages to the event log
+===============================================
+
+Notes: 
+
+(1) In the past some problems were observed with the GUI login 
+screen when this was enabled.  However, it has been tried recently
+with SuSE SLES8 (UL 1.0) and Red Hat 8.0, and no problems were 
+observed with these distributions. Your results may differ.  
+
+(2) If you enable forwarding of syslog messages, and also plan to
+use the syslogat() function in event logging, be aware that using 
+both will result in 2 events being logged for a single call to 
+syslogat().
+
+ If you want to forward syslog messages to the new event log, issue this
+ command:
+
+     /sbin/slog_fwd
+
+ This will forward syslog messages immediately, and after every subsequent
+ reboot.  To disable syslog forwarding:
+
+     /sbin/slog_fwd -r
+
+
+
+
+====================================
+4. Verify logging from Kernel-space
+====================================
+
+NOTE:  If you have installed remote event forwarding plug-ins, and
+disabled logging to local log files, then these tests will not
+work.
+
+If you installed user code from .rpm...
+=======================================
+
+
+   1. Issue the following command, to log in as root
+
+       su - 
+
+   2. cd /var/evlog/test/kernel
+
+   3. If kernel is not built in /usr/src/linux, modify Makefile to specify
+      its location.  Currently, The first line of the Makefile contains the
+      following:
+
+       KERNEL_LOC=/usr/src/linux 
+
+      Additionally, if you are on a ppc64 running a 64-bit kernel, you
+      will need to redefine $(CC) to use ppc64 bit compiler. 
+
+   4. Issue the following commands:
+       make
+      ./runtests.sh
+
+      If your architecture is not i386, then you must specify it as follows:
+      ./runtests.sh s390  (for example)
+
+   5. If the tests complete successfully, you will see messages similar  
+      to those shown below.
+
+kernel api test 1 started
+kernel api test1 :PASSED
+kernel api test 2 started
+kernel api test2 :PASSED
+Kernel facility registration test 3 :PASSED
+Kernel facility registration test 4 :PASSED
+Multi-printk message test 5 :PASSED
+
+NOTE:  If you did not Check 'y' for "Forward printk messages to
+enterprise event log" when you configured the kernel, you will see
+this message for test 2:
+
+kernel api test 2 started
+0
+syslogat test  PASSEDa1,6
+> size=57
+> EVL_Test_Driver: Sending EVL logging event using printk
+> 
+> size=61
+> EVL_Test_Driver: Sending 2nd EVL logging event using printk
+> 
+kernel api test2 :FAILED
+
+If you issue the following command:
+
+   evlfacility -l
+
+you should see the following test facilities:
+
+0xd8c0bf86 test_kfacreg kernel
+0xcd14f75 test_bashful kernel
+0xeb5232b8 test_doc kernel
+0x8c69ff96 test_dopey kernel
+0x36c38aa1 test_grumpy kernel
+0x531dfca3 test_happy kernel
+0x6526797e test_sleepy kernel
+0xdd866b39 test_sneezy kernel
+
+These facilities were registered in the kernel as part of the
+facility registration tests.  They can be removed with the
+
+   evlfacility --delete <facility name>
+
+command (if desirable).   
+
+
+If you installed user code from Tarball...
+==========================================
+
+   1. Issue the following command, to log in as root
+
+       su - 
+
+   2. cd evlog-1.6.1/kernel/test
+
+   3. If kernel is not built in /usr/src/linux, modify Makefile to specify
+      its location.  Currently, The first line of the Makefile contains the
+      following:
+
+       KERNEL_LOC=/usr/src/linux    
+
+      Additionally, if you are on a ppc64 running a 64-bit kernel, you
+      will need to redefine $(CC) to use ppc64 bit compiler.
+
+   4. Issue the following commands:
+       make
+      ./runtests.sh
+
+      If your architecture is not i386, then you must specify it as follows:
+      ./runtests.sh s390
+
+   5. If the tests complete successfully, you will see messages similar 
+      to these:
+
+kernel api test 1 started
+kernel api test1 :PASSED
+kernel api test 2 started
+kernel api test2 :PASSED
+Kernel facility registration test 3 :PASSED
+Kernel facility registration test 4 :PASSED
+
+
+NOTE:  If you did not Check 'y' for "Forward printk to
+enterprise event log" when you configured the kernel, you will see
+this message for test 2:
+
+kernel api test 2 started
+0a1,6
+> size=57
+> EVL_Test_Driver: Sending EVL logging event using 
+> 
+> size=61
+> EVL_Test_Driver: Sending 2nd EVL logging event us
+> 
+kernel api test2 :FAILED
+
+
+If you issue the following command:
+
+   evlfacility -l
+
+you should see the following test facilities:
+
+0xd8c0bf86 test_kfacreg kernel
+0xcd14f75 test_bashful kernel
+0xeb5232b8 test_doc kernel
+0x8c69ff96 test_dopey kernel
+0x36c38aa1 test_grumpy kernel
+0x531dfca3 test_happy kernel
+0x6526797e test_sleepy kernel
+0xdd866b39 test_sneezy kernel
+
+These facilities were registered in the kernel as p
+facility registration tests.  They can be removed w
+
+   evlfacility --delete <facility name>
+
+command (if desirable).   
+
+
+
+==============================================================
+5. Verify logging from User-space, notification, templates, etc.
+===============================================================
+
+NOTE:  If you have installed remote event forwarding plug-ins, and
+disabled logging to local log files, then these tests will not
+work.
+
+   1. Issue the following command, to log in as root:
+
+       su - 
+
+   2. cd /var/evlog/test/
+
+   3. If your architecture is i386, issue the command:
+      ./runtests.sh 
+
+	  If your architecture is not i386, then you must specify the 
+	  architecture.  For example:
+	  ./runtests.sh s390x
+
+If the tests complete successfully, you will see messages similar to these:
+
+evl_log_write :PASSED
+evl_log_write with templates :PASSED
+templates aligntest :PASSED
+templates array-of-structs test :PASSED
+templates array-of-structs API test :PASSED
+templates defaultTest :PASSED
+templates stattest :PASSED
+templates misc test :PASSED
+test of degenerate templates/records :PASSED
+test of array delimiter :PASSED
+syslogat test :PASSED
+test 1 started
+test1   :PASSED
+-----------------
+test2   :PASSED
+-----------------
+This test is testing for access denied
+Access denied.
+test3   :PASSED
+-----------------
+test4   :PASSED
+-----------------
+test5   :PASSED
+-----------------
+test6   :PASSED
+-----------------
+Action was executed with recid=2501 as an argument.
+Action was executed with recid=2503 as an argument.
+Action was executed with recid=2505 as an argument.
+Action was executed with recid=2507 as an argument.
+Action was executed with recid=2509 as an argument.
+Action was executed with recid=2511 as an argument.
+Action was executed with recid=2513 as an argument.
+Action was executed with recid=2517 as an argument.
+Action was executed with recid=2519 as an argument.
+Action was executed with recid=2515 as an argument.
+test7   :PASSED
+-----------------
+testevlog1 :PASSED
+testfac1        :PASSED
+testfac2        :PASSED
+testfac3        :PASSED
+logmgmt1      :PASSED
+
+NOTE:  On an SMP system you may see a message about the discarded
+duplicates test failing.  This is due to the fact that "identical"
+events from different processors are not discarded.
+
+
+   4.  If you enabled forwarding of syslog message to event logging,
+
+   Issue the following commands:
+
+      1. logger -p local3.info TESTING-1-2-3
+
+      2. evlview --filter 'data contains "1-2-3"'
+
+      3. Output from evlview command should look something like this...
+
+  	recid=468, size=14, format=STRING, event_type=1, facility=LOCAL3,
+	severity=INFO, uid=root, gid=root, pid=940, pgrp=940,
+	time=Wed Jun 27 12:51:43 2001, flags=0x0, thread=0x0, processor=0
+	TESTING-1-2-3
+		 
+
+
+=================================
+6. Verify remote event forwarding
+=================================
+
+No automated test scripts are provided, since verifying this 
+feature requires multiple machines; however, a simple test, such as
+issuing an evlsend command, is sufficient to verify the arrival and
+logging of events at the remote consolidator.
+
+For example:
+
+  evlsend -f user -t 1 -m "remote message from myhost01"
+
+If the event is not forwarded and logged correctly, verify the 
+following:
+
+1) Can you ping the remote consolidator host from the source host ?
+
+2) Examine the appropriate .conf file in the  /etc/evlog/plugins 
+   directory on the source host, and the /etc/evlog.d/evlogrmtd.conf
+   file on the event consolidator.
+  - Do the port numbers match ?
+  - If using TCP, do the passwords match ?
+  - Is Disable=no in the .conf file on the source host ?
+
+3) Is the evlogrmtd daemon running on the source host ?
+   If so, then is the source host listed  in the /etc/evlog.d/evlhosts
+   file on the event consolidator ?
+
+4) Check the event log on the source host and event consolidator for
+   events from the LOGMGMT facility indicating problems with either the
+   plug-ins or evlogrmtd.  The command is...
+
+      evlview -f 'facility=LOGMGMT'
+
+=============
+7. Verify ELA
+=============
+
+1) As root, cd /var/evlog/test 
+
+2) Run ela test script
+
+      ./run_ela_tests.sh
+
