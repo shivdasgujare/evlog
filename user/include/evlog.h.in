@@ -191,7 +191,7 @@ struct evlog_position {
    char file[128];
 };
 
-#define _EVLOG_POS { __LINE__, __FUNCTION__, __FILE__ }
+#define _EVLOG_POS { __LINE__, __FILE__ }
 
 struct evlog_info {
    char format[128+64];
