@@ -42,6 +42,7 @@
 #include <grp.h>
 #include <pwd.h>
 #include <sys/wait.h>
+#include <linux/limits.h>
 
 #include "config.h"
 #include "posix_evlog.h"

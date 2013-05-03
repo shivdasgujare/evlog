@@ -37,6 +37,7 @@
 #include <assert.h>
 #include <pwd.h>
 #include <grp.h>
+#include <limits.h>
 
 
 #include "config.h"

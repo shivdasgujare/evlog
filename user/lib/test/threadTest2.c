@@ -24,7 +24,7 @@
  * (which in turn calls posix_log_vprintf).
  */
 
-#define MAX_THREADS (PTHREAD_THREADS_MAX-2)
+#define MAX_THREADS (sysconf(_SC_THREAD_THREADS_MAX)-2)
 
 struct workerStats {
 	pthread_t	tid;

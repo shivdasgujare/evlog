@@ -469,7 +469,7 @@ extern int evlatt_getstructfromarray(const evlattribute_t *att, int index,
 extern void _evlTmplSemanticError(const char *fmt, ...);
 extern tmpl_type_info_t _evlTmplTypeInfo[];
 
-extern tmpl_arch_type_info_t _evlTmplArchTypeInfo[][];
+extern tmpl_arch_type_info_t _evlTmplArchTypeInfo[][24];
 
 extern void _evlTmplDprintf(const char *fmt, ...);
 extern int _evlEndsWith(const char *s, const char *suffix);

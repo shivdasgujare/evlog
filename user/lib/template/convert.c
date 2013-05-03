@@ -244,7 +244,9 @@ conv_swap_long(int log_arch, tmpl_base_type_t type, void *data,
 				memcpy(data, tmp, dest_size);
 			}
 			break;
-    default:
+		default:
+			printf("default switch case %s\n", __FUNCTION__);
+			break;
 	}
 }
 

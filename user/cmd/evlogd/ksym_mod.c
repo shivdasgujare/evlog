@@ -91,11 +91,12 @@
 #include <errno.h>
 #include <sys/fcntl.h>
 #include <sys/stat.h>
-#include <asm/atomic.h>
 #include <stdarg.h>
 #include <paths.h>
 
 #include "ksyms.h"
+
+typedef struct { volatile int cnt; } atomic_t;
 
 #define getsyms get_kernel_syms
 

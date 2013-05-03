@@ -286,7 +286,9 @@ makeAttrSegment(char *attrSpec, int allowNonStdAtts)
 		seg->u.fs_attname = nsaName;
 		seg->u2.fs_attribute = NULL;
 		break;
-  default:
+	default:
+		printf("default switch case %s\n", __FUNCTION__);
+		break;
 	}
 	seg->fs_userfmt = attrFmt;
 	if (attrFmt
@@ -475,7 +477,9 @@ _evlAllocateFmtBuf(const evl_list_t *head, size_t *bufsz)
 			 */
 			size += _evlGetMaxDumpLen();
 			break;
-    default:
+		default:
+			printf("default switch case %s\n", __FUNCTION__);
+			break;
 		}
 		p = p->li_next;
 	} while (p != head);
@@ -667,7 +671,9 @@ adjustUintType(const char *mod, int promote)
 	case TY_INT:		return TY_UINT;
 	case TY_LONG:		return TY_ULONG;
 	case TY_LONGLONG:	return TY_ULONGLONG;
-  default:
+	default:
+		printf("default switch case %s\n", __FUNCTION__);
+		break;
 	}
 	return ty;
 }
