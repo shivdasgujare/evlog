@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ELA_REPORT_DIR=/var/evlog/ela_report
 HIST_FILE=/var/evlog/ela_report/hist

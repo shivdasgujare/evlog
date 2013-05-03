@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ela_name=$1
 EVLNOTIFY=/sbin/evlnotify

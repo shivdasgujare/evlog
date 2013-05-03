@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 EVLOG_STATE_DIR=/var/evlog
 TMPLDIR=$EVLOG_STATE_DIR/templates
 ELA_RPTDIR=$EVLOG_STATE_DIR/ela_report

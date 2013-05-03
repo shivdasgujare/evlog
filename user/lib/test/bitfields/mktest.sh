@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Usage: ./mktest.sh [-n] [-u | -s]
 # Creates bftest.c, bftest.t, and variants.
 # -n causes all the fields to be initialized to -1, not 1.

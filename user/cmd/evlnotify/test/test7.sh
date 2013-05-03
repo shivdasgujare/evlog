@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ./rmactions.sh
 /sbin/evlnotify -F actions7.nfy

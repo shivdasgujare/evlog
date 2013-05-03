@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 TEST_TEMPLATE=degenerate.out
 

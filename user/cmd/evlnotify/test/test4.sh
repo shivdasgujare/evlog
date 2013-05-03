@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # 
 # This test testing the security feature (access granted) of the evlnotify -
 #

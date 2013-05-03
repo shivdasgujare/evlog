@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 
 LD_SO_PRELOAD=/etc/ld.so.preload

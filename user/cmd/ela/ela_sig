@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This is the ela CIM provider daemon
 DAEMON=ela_daemon

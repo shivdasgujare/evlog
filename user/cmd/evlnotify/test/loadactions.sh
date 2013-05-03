@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 let i=10
 while [ "$i" -gt "0" ]
 do

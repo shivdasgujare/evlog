@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ela_name=$1
 if [ -z "$ela_name" ]; then

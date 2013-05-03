@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ELA_REPORT_DIR=@localstatedir@/ela_report
 HIST_FILE=@localstatedir@/ela_report/hist

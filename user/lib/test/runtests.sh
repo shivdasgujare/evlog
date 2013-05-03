@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This script will perform a touch test for the evlog package
 #

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ./test1.sh
 ./test2.sh

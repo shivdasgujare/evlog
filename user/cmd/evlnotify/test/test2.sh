@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This test is testing for the %recid% is being passed to the 
 # action script

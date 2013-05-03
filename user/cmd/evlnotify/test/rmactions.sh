@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This script will remove all registered actions
 # If you run this scriot as root it will remove all

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 ARCH=i386
 TEST_TEMPLATE=evl_log_write.out

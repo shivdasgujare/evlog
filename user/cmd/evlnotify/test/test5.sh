@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This test will test the once_only flag 
 #

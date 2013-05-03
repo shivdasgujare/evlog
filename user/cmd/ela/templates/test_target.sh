@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 FACILITY=$1
 ret=`/sbin/evlfacility -l | awk '{print $2"#"}' | grep -i $FACILITY#`

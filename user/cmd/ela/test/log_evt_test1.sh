@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 
 # What you'd see from dev_printk/netdev_printk...

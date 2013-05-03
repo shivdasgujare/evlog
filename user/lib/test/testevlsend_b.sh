@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # ./evlsend_b.sh should log the same set of events as ./evl_log_write_test2.
 #
 TEST_TEMPLATE=evl_log_write2.out

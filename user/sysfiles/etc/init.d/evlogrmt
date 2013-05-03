@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # chkconfig: 35 09 90
 # description: Remote logging daemon

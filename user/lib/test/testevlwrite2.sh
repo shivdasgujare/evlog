@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 TEST_TEMPLATE=evl_log_write2.out
 

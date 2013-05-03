@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This test test the restricted filter
 # Only the message with severity=INFO is logged

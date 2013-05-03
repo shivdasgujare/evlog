@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This test s testing for basic functionality (notification and action)
 # It loads actions in the actions.nfy file which registers an action that 

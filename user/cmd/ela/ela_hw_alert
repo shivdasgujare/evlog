@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ELA_SCRIPTS_DIR=/usr/share/evlog
 #

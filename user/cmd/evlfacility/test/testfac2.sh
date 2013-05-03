@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This test test the restricted filter
 # evlsend should not be able to log this message since the restricted query 

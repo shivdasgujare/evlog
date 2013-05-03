@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # some vpd data for each record
 vpd_ds=""	
 vpd_yl=""

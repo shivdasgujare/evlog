@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ./rmactions.sh
 sleep 1
