@@ -671,7 +671,7 @@ processEvent(int sd)
 		 */
 		if((req->nfyhdr.flags & POSIX_LOG_NFY_DISABLED) == 0 ) {
 			int match;
-            struct siginfo si;
+			siginfo_t si;
 			union sigval val;
 			int ret;
 			if (req->nfy_query.qu_tree != NULL) {

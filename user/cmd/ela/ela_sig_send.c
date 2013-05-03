@@ -51,7 +51,7 @@ main(int argc, char *argv[])
 	int recid = -1;
 	pid_t pid = -1;
 	int sub_id = 234;	/* just an extra field, that we can use */
-	struct siginfo si;
+	siginfo_t si;
 	union sigval val;
 	int ret;
 	char *flag;
