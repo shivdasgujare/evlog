@@ -28,14 +28,14 @@ all: libevlsyslog.so
 
 libevlsyslog.so: $(DOTSOS)
 	rm -f libevlsyslog.so
-	ld -share -soname libevlsyslog.so.1 -o libevlsyslog.so $(LIB_SO)
+	ld -share -soname libevlsyslog.so.0 -o libevlsyslog.so $(LIB_SO)
 
 libevlsyslog.os: libevlsyslog.c $(HEADERS)
 	$(CC) -c $(CFLAGS_SO) -o $@ libevlsyslog.c  
 
 install:
 	./ldsopreload -r /lib/libevlsyslog.so
-	rm -f /lib/libevlsyslog.so.1
+	rm -f /lib/libevlsyslog.so.0
 	rm -f /lib/libevlsyslog.so
 	cp libevlsyslog.so /lib
 	/sbin/ldconfig
@@ -43,7 +43,7 @@ install:
 
 uninstall:
 	./ldsopreload -r /lib/libevlsyslog.so
-	rm -f /lib/libevlsyslog.so.1
+	rm -f /lib/libevlsyslog.so.0
 	rm -f /lib/libevlsyslog.so
 	/sbin/ldconfig
 

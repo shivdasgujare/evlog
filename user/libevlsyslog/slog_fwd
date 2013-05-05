@@ -4,7 +4,7 @@
 LD_SO_PRELOAD=/etc/ld.so.preload
 TEMP_FILE=/etc/ld.so.preload.$$
 LIB_EXIST=""
-PRELOAD_LIB=/lib/libevlsyslog.so.1
+PRELOAD_LIB=/lib/libevlsyslog.so.0
 
 if [ "$1" = "-r" ]
 then
